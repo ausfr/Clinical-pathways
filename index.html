@@ -218,13 +218,100 @@
             "uti": {
                 title: "Uncomplicated Urinary Tract Infection",
                 nodes: {
-                    // --- PASTE UTI DATA HERE ---
                     "start": {
-                        question: "This is a placeholder for the UTI pathway. Add your data in the code!",
-                        options: [ { label: "Test Yes", nextId: "result_1" }, { label: "Test No", nextId: "result_1" } ]
+                        question: "Consider the risk of deterioration, red flags or serious illness.",
+                        isGateway: true,
+                        options: [
+                            { label: "YES (Patient at risk)", nextId: "urgent_referral" },
+                            { label: "NO (No immediate red flags)", nextId: "pyelonephritis" }
+                        ]
                     },
-                    "result_1": { isResult: true, text: "End of placeholder." }
+                    "urgent_referral": {
+                        isResult: true,
+                        text: "Urgent same day referral:\n• General practice\n• Relevant out of hours service",
+                        needsNews2: true 
+                    },
+                    "pyelonephritis": {
+                        type: "checkbox",
+                        question: "Check for any new signs/symptoms of PYELONEPHRITIS:",
+                        symptoms: [
+                            "Kidney pain/tenderness in back under ribs",
+                            "Flu like illness",
+                            "Shaking chills (rigors) or temperature 37.9°C or above",
+                            "Nausea/vomiting"
+                        ],
+                        logic: [
+                            { condition: ">=", count: 1, nextId: "urgent_referral" },
+                            { condition: "==", count: 0, nextId: "exclusions" }
+                        ]
+                    },
+                    "exclusions": {
+                        type: "checkbox",
+                        question: "Does the patient have ANY of the following exclusions:",
+                        symptoms: [
+                            "Vaginal discharge: 80% do not have UTI",
+                            "Urethritis (caused by irritation or inflammation)",
+                            "Sexually transmitted infection risk",
+                            "Signs or symptoms of pregnancy",
+                            "Genitourinary syndrome of menopause (vulvovaginal atrophy)",
+                            "Patient is immunosuppressed"
+                        ],
+                        logic: [
+                            { condition: ">=", count: 1, nextId: "onward_referral" },
+                            { condition: "==", count: 0, nextId: "diagnostic_signs" }
+                        ]
+                    },
+                    "onward_referral": {
+                        isResult: true,
+                        text: "Onward referral:\n• General practice\n• Sexual health clinics\n• Other provider as appropriate"
+                    },
+                    "diagnostic_signs": {
+                        type: "checkbox",
+                        isGateway: true,
+                        question: "Select any of the 3 key diagnostic signs/symptoms present:",
+                        symptoms: [
+                            "Dysuria (Acute pain or burning sensation when passing urine or at the end of urination)",
+                            "New nocturia (needing to pass urine in the night)",
+                            "Urine cloudy to the naked eye"
+                        ],
+                        logic: [
+                            { condition: "==", count: 0, nextId: "no_symptom" },
+                            { condition: "==", count: 1, nextId: "one_symptom" },
+                            { condition: ">=", count: 2, nextId: "two_symptoms" }
+                        ]
+                    },
+                    "no_symptom": {
+                        type: "checkbox",
+                        question: "Are there other urinary symptoms present?",
+                        symptoms: [
+                            "Urgency",
+                            "Frequency",
+                            "Visible haematuria",
+                            "Suprapubic pain/tenderness"
+                        ],
+                        logic: [
+                            { condition: ">=", count: 1, nextId: "uti_equally_likely" },
+                            { condition: "==", count: 0, nextId: "uti_less_likely" }
+                        ]
+                    },
+                    "uti_equally_likely": {
+                        isResult: true,
+                        text: "UTI equally likely to other diagnosis.\n\nOnward referral:\n• General practice\n• Sexual health clinics\n• Other provider as appropriate\n\nFOR ALL PATIENTS: share self-care and safety-netting advice using TARGET UTI leaflet."
+                    },
+                    "uti_less_likely": {
+                        isResult: true,
+                        text: "UTI less likely.\n\nSelf-care and pain relief.\n\nFOR ALL PATIENTS: share self-care and safety-netting advice using TARGET UTI leaflet."
+                    },
+                    "one_symptom": {
+                        isResult: true,
+                        text: "Shared decision making approach using TARGET UTI resources.\n\nIn patients that describe their symptoms as mild consider pain relief and self care as first line treatment.\n\nAsk patient to return to Pharmacy if no improvement in 48 hours for pharmacist reassessment.\n\nFOR ALL PATIENTS: share self-care and safety-netting advice."
+                    },
+                    "two_symptoms": {
+                        isResult: true,
+                        text: "In patients with moderate to severe symptoms, offer nitrofurantoin for 3 days (subject to inclusion/exclusion criteria in PGD) plus self-care.\n\nFOR ALL PATIENTS: If symptoms worsen rapidly or significantly at any time, OR do not improve in 48 hours of taking antibiotics -> Onward referral.\n\nFOR ALL PATIENTS: share self-care and safety-netting advice using TARGET UTI leaflet."
+                    }
                 }
+            },
             },
             "impetigo": {
                 title: "Impetigo",
