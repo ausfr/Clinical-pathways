@@ -410,63 +410,101 @@
         function renderNode(nodeId) {
             const pathwayData = pathwaysDB[currentPathwayId];
             const nodeData = pathwayData.nodes[nodeId];
-            
-            if (!nodeData) {
-                console.error(`Node ID '${nodeId}' not found in data!`);
-                return;
-            }
+            if (!nodeData) return;
 
-            // Create wrapper
             const stepDiv = document.createElement('div');
             stepDiv.id = `step-${nodeId}`;
             renderedNodes.push(nodeId);
 
-            // Handle Final Results
+            // 1. Result Cards & NEWS2 Button
             if (nodeData.isResult) {
                 stepDiv.className = 'result-card';
-                stepDiv.innerHTML = nodeData.text.replace(/\n/g, '<br>');
+                stepDiv.innerText = nodeData.text;
+                
+                if(nodeData.needsNews2) {
+                    const newsBtn = document.createElement('button');
+                    newsBtn.innerText = "🧮 Open NEWS2 Calculator";
+                    newsBtn.style.cssText = "background:#D5281B; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; font-weight:bold; display:block; margin-top:15px;";
+                    newsBtn.onclick = () => document.getElementById('news2-modal').style.display = 'block';
+                    stepDiv.appendChild(newsBtn);
+                }
                 pathwayContent.appendChild(stepDiv);
                 stepDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 return;
             }
 
-            // Handle Questions
+            // 2. Question Setup
             stepDiv.className = 'step-card';
-            
-            // Check if it's a Gateway Point
             if (nodeData.isGateway) {
-                stepDiv.classList.add('gateway');
-                const badge = document.createElement('div');
-                badge.className = 'gateway-badge';
-                badge.innerText = 'Gateway Point';
-                stepDiv.appendChild(badge);
+                stepDiv.innerHTML = `<div style="background:#FBC02D; display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:10px;">Gateway Point</div>`;
             }
             
-            // Question Text
             const questionText = document.createElement('div');
             questionText.className = 'step-question';
-            questionText.innerHTML = nodeData.question.replace(/\n/g, '<br>');
+            questionText.innerText = nodeData.question;
             stepDiv.appendChild(questionText);
 
-            // Answer Options
-            const optionsContainer = document.createElement('div');
-            optionsContainer.className = 'options-container';
+            // 3. Render Checkboxes
+            if (nodeData.type === "checkbox") {
+                nodeData.symptoms.forEach((symp, index) => {
+                    const label = document.createElement('label');
+                    label.style.cssText = "display:flex; gap:10px; background:#f9f9f9; padding:12px; margin-bottom:8px; border-radius:6px; cursor:pointer;";
+                    label.innerHTML = `<input type="checkbox" class="cb-${nodeId}" style="transform:scale(1.2);"> <span>${symp}</span>`;
+                    stepDiv.appendChild(label);
+                });
 
-            nodeData.options.forEach((option, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = option.label;
-                btn.onclick = () => handleSelection(nodeId, index, option.nextId, stepDiv);
-                optionsContainer.appendChild(btn);
-            });
+                const evalBtn = document.createElement('button');
+                evalBtn.innerText = "Confirm Selection";
+                evalBtn.style.cssText = "background:#005EB8; color:white; border:none; padding:12px; border-radius:4px; cursor:pointer; font-weight:bold; margin-top:10px;";
+                evalBtn.onclick = () => {
+                    // Logic to count checked boxes
+                    let count = 0;
+                    document.querySelectorAll(`.cb-${nodeId}`).forEach(cb => { if(cb.checked) count++; });
+                    
+                    // Logic to clear old nodes if they change their mind
+                    const currentIndex = renderedNodes.indexOf(nodeId);
+                    if (currentIndex > -1) {
+                        renderedNodes.splice(currentIndex + 1).forEach(id => {
+                            const el = document.getElementById(`step-${id}`);
+                            if (el) el.remove();
+                        });
+                    }
 
-            stepDiv.appendChild(optionsContainer);
+                    // Find where to route them based on count
+                    for (let rule of nodeData.logic) {
+                        if ((rule.condition === "==" && count === rule.count) || 
+                            (rule.condition === ">=" && count >= rule.count)) {
+                            renderNode(rule.nextId); 
+                            return;
+                        }
+                    }
+                };
+                stepDiv.appendChild(evalBtn);
+            } 
+            // 4. Render Standard Buttons
+            else {
+                nodeData.options.forEach((option, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = option.label;
+                    btn.style.marginRight = "10px";
+                    btn.onclick = () => {
+                        const currentIndex = renderedNodes.indexOf(nodeId);
+                        if (currentIndex > -1) {
+                            renderedNodes.splice(currentIndex + 1).forEach(id => {
+                                const el = document.getElementById(`step-${id}`);
+                                if (el) el.remove();
+                            });
+                        }
+                        renderNode(option.nextId);
+                    };
+                    stepDiv.appendChild(btn);
+                });
+            }
+
             pathwayContent.appendChild(stepDiv);
-            
-            // Scroll down
             stepDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-
         // Handle button clicks (greying out and advancing)
         function handleSelection(nodeId, selectedIndex, nextId, stepDiv) {
             const buttons = stepDiv.querySelectorAll('.option-btn');
