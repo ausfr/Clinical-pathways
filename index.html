@@ -8,10 +8,12 @@
         :root {
             --nhs-blue: #005EB8;
             --nhs-dark-blue: #003087;
+            --nhs-green: #007F3B;
+            --nhs-red: #D5281B;
             --grey: #E8EDEE;
             --text-color: #231f20;
-            --alert-bg: #FFEB3B; /* For results */
-            --gateway-bg: #FFF9C4; /* Light yellow for Gateway Points */
+            --alert-bg: #FFEB3B; 
+            --gateway-bg: #FFF9C4; 
             --gateway-border: #FBC02D;
         }
 
@@ -32,160 +34,105 @@
             margin-bottom: 20px;
         }
 
-        .header h1 {
-            color: var(--nhs-blue);
-            margin-bottom: 5px;
-        }
+        .header h1 { color: var(--nhs-blue); margin-bottom: 5px; }
 
-        /* --- Menu Styling --- */
         #menu-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-top: 30px;
+            display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 30px;
         }
 
         .menu-btn {
-            background-color: white;
-            color: var(--nhs-blue);
-            border: 2px solid var(--nhs-blue);
-            padding: 20px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background-color: white; color: var(--nhs-blue); border: 2px solid var(--nhs-blue);
+            padding: 20px; font-size: 1.2em; font-weight: bold; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
         }
 
-        .menu-btn:hover {
-            background-color: var(--nhs-blue);
-            color: white;
-        }
+        .menu-btn:hover { background-color: var(--nhs-blue); color: white; }
 
-        /* --- Pathway Container & Controls --- */
-        #pathway-wrapper {
-            display: none; /* Hidden until a pathway is selected */
-        }
+        #pathway-wrapper { display: none; }
 
-        .controls {
-            margin-bottom: 20px;
-        }
+        .controls { margin-bottom: 20px; }
 
         .back-btn {
-            background-color: #768692;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
+            background-color: #768692; color: white; border: none; padding: 10px 15px;
+            border-radius: 4px; cursor: pointer; font-weight: bold;
         }
 
-        .back-btn:hover {
-            background-color: #4C6272;
-        }
+        #pathway-title { color: var(--nhs-dark-blue); margin-bottom: 20px; }
 
-        #pathway-title {
-            color: var(--nhs-dark-blue);
-            margin-bottom: 20px;
-        }
+        #pathway-content { display: flex; flex-direction: column; gap: 20px; }
 
-        #pathway-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* --- Card Styling --- */
         .step-card {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeIn 0.4s forwards ease-out;
+            background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s forwards ease-out;
             border-left: 5px solid var(--nhs-blue);
         }
 
-        /* Gateway Point Special Styling */
         .step-card.gateway {
-            background-color: var(--gateway-bg);
-            border-left: 5px solid var(--gateway-border);
-            border-top: 2px solid var(--gateway-border);
-            border-right: 2px solid var(--gateway-border);
-            border-bottom: 2px solid var(--gateway-border);
+            background-color: var(--gateway-bg); border-left: 5px solid var(--gateway-border);
         }
 
         .gateway-badge {
-            background-color: var(--gateway-border);
-            color: #333;
-            font-size: 0.8em;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 10px;
+            background-color: var(--gateway-border); color: #333; font-size: 0.8em;
+            font-weight: bold; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px;
         }
 
-        .step-question {
-            font-size: 1.1em;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
+        .step-question { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; white-space: pre-wrap; }
 
-        .options-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+        .options-container { display: flex; flex-wrap: wrap; gap: 10px; }
 
-        /* --- Option Buttons --- */
         button.option-btn {
-            background-color: var(--nhs-blue);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1em;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: bold;
+            background-color: var(--nhs-blue); color: white; border: none; padding: 12px 24px;
+            font-size: 1em; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
 
-        button.option-btn:hover {
-            background-color: var(--nhs-dark-blue);
-        }
+        button.option-btn:hover { background-color: var(--nhs-dark-blue); }
+        button.option-btn.disabled { background-color: var(--grey); color: #768692; pointer-events: none; opacity: 0.6; }
+        button.option-btn.selected { background-color: var(--nhs-dark-blue); outline: 3px solid #FFB81C; outline-offset: 2px; }
 
-        button.option-btn.disabled {
-            background-color: var(--grey);
-            color: #768692;
-            cursor: not-allowed;
-            pointer-events: none;
-            opacity: 0.6;
+        /* Checkbox Styling */
+        .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .checkbox-item {
+            display: flex; align-items: flex-start; gap: 10px; background: #f9f9f9;
+            padding: 12px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: 0.2s;
         }
-
-        button.option-btn.selected {
-            background-color: var(--nhs-dark-blue);
-            outline: 3px solid #FFB81C; /* NHS Yellow focus */
-            outline-offset: 2px;
+        .checkbox-item:hover { background: #f1f1f1; border-color: var(--nhs-blue); }
+        .checkbox-item input[type="checkbox"] { margin-top: 4px; transform: scale(1.3); cursor: pointer; }
+        .checkbox-label { font-size: 1em; cursor: pointer; }
+        
+        button.continue-btn {
+            background-color: var(--nhs-green); color: white; border: none; padding: 12px 24px;
+            font-size: 1.1em; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%;
         }
+        button.continue-btn:hover { background-color: #005a2b; }
 
-        /* --- Result Box --- */
         .result-card {
-            background: var(--alert-bg);
-            padding: 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            color: #333;
-            border-left: 5px solid #D32F2F; /* Red alert edge */
-            animation: fadeIn 0.4s forwards ease-out;
+            background: var(--alert-bg); padding: 20px; border-radius: 8px; font-weight: bold;
+            color: #333; border-left: 5px solid #D32F2F; animation: fadeIn 0.4s forwards ease-out; white-space: pre-wrap;
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
+        .news2-btn {
+            background-color: var(--nhs-red); color: white; border: none; padding: 10px 20px;
+            font-size: 1em; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 15px;
         }
+
+        /* Modal Styling */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); overflow: auto;
+        }
+        .modal-content {
+            background-color: white; margin: 5% auto; padding: 25px; border-radius: 8px;
+            width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .close-modal { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-modal:hover { color: black; }
+        .calc-form-group { margin-bottom: 15px; }
+        .calc-form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .calc-form-group input, .calc-form-group select {
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em;
+        }
+
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -195,40 +142,49 @@
         <p>Interactive Diagnostic Tool</p>
     </div>
 
-    <div id="menu-container">
-        </div>
+    <div id="menu-container"></div>
 
     <div id="pathway-wrapper">
         <div class="controls">
             <button class="back-btn" onclick="showMenu()">← Back to Menu / Start Over</button>
         </div>
         <h2 id="pathway-title">Pathway Title</h2>
-        <div id="pathway-content">
-            </div>
+        <div id="pathway-content"></div>
     </div>
-    <div id="news2-modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); overflow:auto;">
-        <div style="background-color:white; margin:10% auto; padding:25px; border-radius:8px; width:90%; max-width:500px; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
-            <span onclick="document.getElementById('news2-modal').style.display='none'" style="float:right; font-size:24px; font-weight:bold; cursor:pointer;">&times;</span>
-            <h2 style="color:#005EB8; margin-top:0;">NEWS2 Calculator</h2>
-            <p>Score patient parameters below ahead of signposting to A&E or calling 999.</p>
+
+    <div id="news2-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeNews2()">&times;</span>
+            <h2 style="color: var(--nhs-blue); margin-top: 0;">NEWS2 Calculator</h2>
+            <p>Standard scale calculation.</p>
             
-            <div style="margin-bottom:10px;"><label>Respiration Rate:</label> <input type="number" style="width:100%; padding:8px;"></div>
-            <div style="margin-bottom:10px;"><label>SpO2 Scale 1:</label> <input type="number" style="width:100%; padding:8px;"></div>
-            <div style="margin-bottom:10px;"><label>Systolic BP:</label> <input type="number" style="width:100%; padding:8px;"></div>
-            <div style="margin-bottom:10px;"><label>Pulse:</label> <input type="number" style="width:100%; padding:8px;"></div>
-            <div style="margin-bottom:10px;"><label>Temperature:</label> <input type="number" style="width:100%; padding:8px;"></div>
+            <div class="calc-form-group">
+                <label>Respiration Rate (breaths/min)</label>
+                <input type="number" id="n-rr" placeholder="e.g. 16">
+            </div>
+            <div class="calc-form-group">
+                <label>SpO2 (%)</label>
+                <input type="number" id="n-spo2" placeholder="e.g. 98">
+            </div>
+            <div class="calc-form-group">
+                <label>Systolic Blood Pressure (mmHg)</label>
+                <input type="number" id="n-sbp" placeholder="e.g. 120">
+            </div>
+            <div class="calc-form-group">
+                <label>Pulse (beats/min)</label>
+                <input type="number" id="n-hr" placeholder="e.g. 75">
+            </div>
+            <div class="calc-form-group">
+                <label>Temperature (°C)</label>
+                <input type="number" step="0.1" id="n-temp" placeholder="e.g. 37.2">
+            </div>
             
-            <button onclick="alert('NEWS2 Calculation Logic would process here.')" style="background-color:#007F3B; color:white; border:none; padding:12px; width:100%; cursor:pointer; border-radius:4px; font-weight:bold; margin-top:10px;">Calculate Score</button>
+            <button class="continue-btn" onclick="calculateNews2()">Calculate Score</button>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // 1. YOUR DATA GOES HERE
-        // ==========================================
-        // Fill in the 'nodes' object for each pathway.
-        // Always start your first question with the key "start".
-        
+        // 1. THE DATA
         const pathwaysDB = {
             "uti": {
                 title: "Uncomplicated Urinary Tract Infection",
@@ -326,102 +282,58 @@
                         text: "In patients with moderate to severe symptoms, offer nitrofurantoin for 3 days (subject to inclusion/exclusion criteria in PGD) plus self-care.\n\nFOR ALL PATIENTS: If symptoms worsen rapidly or significantly at any time, OR do not improve in 48 hours of taking antibiotics -> Onward referral.\n\nFOR ALL PATIENTS: share self-care and safety-netting advice using TARGET UTI leaflet."
                     }
                 }
-            },
-            },
-            "impetigo": {
-                title: "Impetigo",
-                nodes: {
-                    // --- PASTE IMPETIGO DATA HERE ---
-                }
-            },
-            "insect_bites": {
-                title: "Infected Insect Bites",
-                nodes: {
-                    // --- PASTE INSECT BITES DATA HERE ---
-                }
-            },
-            "sore_throat": {
-                title: "Acute Sore Throat",
-                nodes: {
-                    // --- PASTE SORE THROAT DATA HERE ---
-                }
-            },
-            "sinusitis": {
-                title: "Acute Sinusitis",
-                nodes: {
-                    // --- PASTE SINUSITIS DATA HERE ---
-                }
-            },
-            "shingles": {
-                title: "Shingles",
-                nodes: {
-                    // --- PASTE SHINGLES DATA HERE ---
-                }
-            },
-            "otitis_media": {
-                title: "Acute Otitis Media",
-                nodes: {
-                    // --- PASTE OTITIS MEDIA DATA HERE ---
-                }
             }
         };
 
-        // ==========================================
-        // 2. THE ENGINE (DO NOT EDIT BELOW THIS LINE)
-        // ==========================================
-        
+        // 2. THE ENGINE
         const menuContainer = document.getElementById('menu-container');
         const pathwayWrapper = document.getElementById('pathway-wrapper');
         const pathwayTitle = document.getElementById('pathway-title');
         const pathwayContent = document.getElementById('pathway-content');
-        
         let currentPathwayId = null;
         let renderedNodes = [];
 
-        // Initialize the Main Menu
         function initMenu() {
-            menuContainer.innerHTML = ''; // Clear existing
+            menuContainer.innerHTML = ''; 
             for (const [key, pathway] of Object.entries(pathwaysDB)) {
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.innerText = pathway.title;
-                btn.onclick = () => loadPathway(key);
-                menuContainer.appendChild(btn);
+                if(Object.keys(pathway.nodes).length > 0) {
+                    const btn = document.createElement('button');
+                    btn.className = 'menu-btn';
+                    btn.innerText = pathway.title;
+                    btn.onclick = () => loadPathway(key);
+                    menuContainer.appendChild(btn);
+                }
             }
         }
 
-        // Switch from Menu to a Specific Pathway
         function loadPathway(pathwayKey) {
             currentPathwayId = pathwayKey;
             const pathwayData = pathwaysDB[pathwayKey];
-
-            // Hide menu, show pathway UI
             menuContainer.style.display = 'none';
             pathwayWrapper.style.display = 'block';
-            
-            // Set title and clear previous content
             pathwayTitle.innerText = pathwayData.title;
             pathwayContent.innerHTML = '';
             renderedNodes = [];
-
-            // Check if data exists for this pathway
-            if (Object.keys(pathwayData.nodes).length === 0) {
-                pathwayContent.innerHTML = '<div class="result-card">Data for this pathway has not been added yet.</div>';
-                return;
-            }
-
-            // Start the flow
             renderNode('start');
         }
 
-        // Go back to the Main Menu
         function showMenu() {
             pathwayWrapper.style.display = 'none';
             menuContainer.style.display = 'grid';
             currentPathwayId = null;
         }
 
-        // Build a question or result box on the screen
+        function clearBelow(nodeId) {
+            const currentIndex = renderedNodes.indexOf(nodeId);
+            if (currentIndex > -1) {
+                const nodesToRemove = renderedNodes.splice(currentIndex + 1);
+                nodesToRemove.forEach(id => {
+                    const el = document.getElementById(`step-${id}`);
+                    if (el) el.remove();
+                });
+            }
+        }
+
         function renderNode(nodeId) {
             const pathwayData = pathwaysDB[currentPathwayId];
             const nodeData = pathwayData.nodes[nodeId];
@@ -431,27 +343,33 @@
             stepDiv.id = `step-${nodeId}`;
             renderedNodes.push(nodeId);
 
-            // 1. Result Cards & NEWS2 Button
+            // RENDER RESULT CARDS & NEWS2 BUTTON
             if (nodeData.isResult) {
                 stepDiv.className = 'result-card';
                 stepDiv.innerText = nodeData.text;
                 
                 if(nodeData.needsNews2) {
                     const newsBtn = document.createElement('button');
-                    newsBtn.innerText = "🧮 Open NEWS2 Calculator";
-                    newsBtn.style.cssText = "background:#D5281B; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; font-weight:bold; display:block; margin-top:15px;";
-                    newsBtn.onclick = () => document.getElementById('news2-modal').style.display = 'block';
+                    newsBtn.className = 'news2-btn';
+                    newsBtn.innerText = "🧮 Calculate NEWS2 Score";
+                    newsBtn.onclick = () => document.getElementById('news2-modal').style.display = "block";
+                    stepDiv.appendChild(document.createElement('br'));
                     stepDiv.appendChild(newsBtn);
                 }
+
                 pathwayContent.appendChild(stepDiv);
                 stepDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 return;
             }
 
-            // 2. Question Setup
+            // RENDER QUESTION CARDS
             stepDiv.className = 'step-card';
             if (nodeData.isGateway) {
-                stepDiv.innerHTML = `<div style="background:#FBC02D; display:inline-block; padding:3px 8px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:10px;">Gateway Point</div>`;
+                stepDiv.classList.add('gateway');
+                const badge = document.createElement('div');
+                badge.className = 'gateway-badge';
+                badge.innerText = 'Gateway Point';
+                stepDiv.appendChild(badge);
             }
             
             const questionText = document.createElement('div');
@@ -459,97 +377,99 @@
             questionText.innerText = nodeData.question;
             stepDiv.appendChild(questionText);
 
-            // 3. Render Checkboxes
+            // RENDER CHECKBOXES
             if (nodeData.type === "checkbox") {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'checkbox-group';
+                
                 nodeData.symptoms.forEach((symp, index) => {
                     const label = document.createElement('label');
-                    label.style.cssText = "display:flex; gap:10px; background:#f9f9f9; padding:12px; margin-bottom:8px; border-radius:6px; cursor:pointer;";
-                    label.innerHTML = `<input type="checkbox" class="cb-${nodeId}" style="transform:scale(1.2);"> <span>${symp}</span>`;
-                    stepDiv.appendChild(label);
+                    label.className = 'checkbox-item';
+                    
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.value = index;
+                    cb.className = `cb-${nodeId}`;
+                    cb.onchange = () => clearBelow(nodeId);
+                    
+                    const span = document.createElement('span');
+                    span.className = 'checkbox-label';
+                    span.innerText = symp;
+
+                    label.appendChild(cb);
+                    label.appendChild(span);
+                    groupDiv.appendChild(label);
                 });
 
                 const evalBtn = document.createElement('button');
+                evalBtn.className = 'continue-btn';
                 evalBtn.innerText = "Confirm Selection";
-                evalBtn.style.cssText = "background:#005EB8; color:white; border:none; padding:12px; border-radius:4px; cursor:pointer; font-weight:bold; margin-top:10px;";
                 evalBtn.onclick = () => {
-                    // Logic to count checked boxes
-                    let count = 0;
-                    document.querySelectorAll(`.cb-${nodeId}`).forEach(cb => { if(cb.checked) count++; });
-                    
-                    // Logic to clear old nodes if they change their mind
-                    const currentIndex = renderedNodes.indexOf(nodeId);
-                    if (currentIndex > -1) {
-                        renderedNodes.splice(currentIndex + 1).forEach(id => {
-                            const el = document.getElementById(`step-${id}`);
-                            if (el) el.remove();
-                        });
-                    }
+                    clearBelow(nodeId);
+                    let checkedCount = 0;
+                    document.querySelectorAll(`.cb-${nodeId}`).forEach(cb => { if(cb.checked) checkedCount++; });
 
-                    // Find where to route them based on count
+                    evalBtn.innerText = "Confirmed (" + checkedCount + " Selected)";
+                    evalBtn.style.backgroundColor = "#768692";
+
                     for (let rule of nodeData.logic) {
-                        if ((rule.condition === "==" && count === rule.count) || 
-                            (rule.condition === ">=" && count >= rule.count)) {
-                            renderNode(rule.nextId); 
-                            return;
+                        if (rule.condition === "==" && checkedCount === rule.count) {
+                            renderNode(rule.nextId); return;
+                        }
+                        if (rule.condition === ">=" && checkedCount >= rule.count) {
+                            renderNode(rule.nextId); return;
                         }
                     }
                 };
+
+                stepDiv.appendChild(groupDiv);
                 stepDiv.appendChild(evalBtn);
             } 
-            // 4. Render Standard Buttons
-            else {
+            // RENDER STANDARD BUTTONS
+            else if (nodeData.options) {
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+
                 nodeData.options.forEach((option, index) => {
                     const btn = document.createElement('button');
                     btn.className = 'option-btn';
                     btn.innerText = option.label;
-                    btn.style.marginRight = "10px";
                     btn.onclick = () => {
-                        const currentIndex = renderedNodes.indexOf(nodeId);
-                        if (currentIndex > -1) {
-                            renderedNodes.splice(currentIndex + 1).forEach(id => {
-                                const el = document.getElementById(`step-${id}`);
-                                if (el) el.remove();
-                            });
-                        }
+                        clearBelow(nodeId);
+                        
+                        // Grey out unselected options
+                        const allBtns = optionsContainer.querySelectorAll('.option-btn');
+                        allBtns.forEach((b, i) => {
+                            if (i === index) {
+                                b.classList.add('selected');
+                                b.classList.remove('disabled');
+                            } else {
+                                b.classList.add('disabled');
+                                b.classList.remove('selected');
+                            }
+                        });
+
                         renderNode(option.nextId);
                     };
-                    stepDiv.appendChild(btn);
+                    optionsContainer.appendChild(btn);
                 });
+                stepDiv.appendChild(optionsContainer);
             }
 
             pathwayContent.appendChild(stepDiv);
             stepDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-        // Handle button clicks (greying out and advancing)
-        function handleSelection(nodeId, selectedIndex, nextId, stepDiv) {
-            const buttons = stepDiv.querySelectorAll('.option-btn');
-            
-            // Logic to remove steps if a user changes their mind on an older question
-            const currentIndex = renderedNodes.indexOf(nodeId);
-            if (currentIndex > -1) {
-                const nodesToRemove = renderedNodes.splice(currentIndex + 1);
-                nodesToRemove.forEach(id => {
-                    const el = document.getElementById(`step-${id}`);
-                    if (el) el.remove();
-                });
-            }
 
-            // Apply 'selected' and 'disabled' styles
-            buttons.forEach((btn, index) => {
-                if (index === selectedIndex) {
-                    btn.classList.add('selected');
-                    btn.classList.remove('disabled');
-                } else {
-                    btn.classList.add('disabled');
-                    btn.classList.remove('selected');
-                }
-            });
-
-            // Trigger the next step
-            renderNode(nextId);
+        // 3. NEWS2 CALCULATOR MODAL LOGIC
+        function closeNews2() {
+            document.getElementById("news2-modal").style.display = "none";
         }
 
-        // Boot up the app
+        function calculateNews2() {
+            alert("This connects to the math logic for NEWS2 calculations. Ready to be programmed next!");
+        }
+
+        // Boot Application
         initMenu();
 
     </script>
