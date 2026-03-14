@@ -1,1 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTI Flowchart Layout</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --orange: #e27d60;
+            --grey-box: #8e8d8a;
+            --teal: #659dbd;
+            --light-blue: #a3c2de;
+            --green: #859a71;
+            --coral: #e8a87c;
+            --yellow: #fdf498;
+            --line-color: #ccc;
+        }
 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .flowchart-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Base Node Styling */
+        .node {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+            font-size: 0.95em;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .node h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: white;
+        }
+
+        /* Color Themes matching the screenshot */
+        .bg-orange { background-color: var(--orange); color: white; }
+        .bg-grey { background-color: var(--grey-box); color: white; }
+        .bg-teal { background-color: var(--teal); color: white; }
+        .bg-light-blue { background-color: var(--light-blue); color: #333; font-weight: bold; }
+        .bg-green { background-color: var(--green); color: white; }
+        .bg-coral { background-color: var(--coral); color: #333; }
+        
+        /* Gateway Point */
+        .gateway {
+            background-color: var(--yellow);
+            border: 2px solid red;
+            color: red;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 4px;
+            margin-bottom: -10px;
+            z-index: 2;
+        }
+
+        /* Layout rows for branches */
+        .flow-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+
+        .side-branch {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
+
+        /* The drawn line for YES branches */
+        .connector-line {
+            width: 50px;
+            height: 2px;
+            background-color: var(--line-color);
+            position: relative;
+        }
+        
+        .connector-line::after {
+            content: "YES";
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            font-size: 0.8em;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* Downward lines connecting rows */
+        .down-arrow {
+            width: 2px;
+            height: 20px;
+            background-color: var(--line-color);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .down-arrow.has-no::after {
+            content: "NO";
+            position: absolute;
+            top: 0;
+            left: 10px;
+            font-size: 0.8em;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* Three Column Layout for the bottom half */
+        .three-columns {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .col .node {
+            width: 90%;
+        }
+
+        /* Buttons */
+        .action-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button.flow-btn {
+            background-color: white;
+            color: #333;
+            border: 2px solid transparent;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button.flow-btn:hover {
+            background-color: #eee;
+        }
+
+        button.flow-btn.selected {
+            border: 3px solid #000;
+            background-color: #e0e0e0;
+        }
+
+        button.flow-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- THE LOCKING MECHANISM --- */
+        .locked {
+            opacity: 0.3;
+            pointer-events: none;
+            filter: grayscale(80%);
+        }
+
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align: center; color: #005EB8;">Uncomplicated Urinary Tract Infection</h2>
+    
+    <div class="flowchart-container">
+
+        <div class="flow-row" id="row-1">
+            <div class="node bg-orange" id="node-1">
+                Consider the risk of deterioration or serious illness
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'YES', 'node-1-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'NO', 'node-2')">NO</button>
+                </div>
+            </div>
+            
+            <div class="side-branch locked" id="node-1-side">
+                <div class="connector-line"></div>
+                <div class="node bg-orange" style="width: 250px;">
+                    Consider calculating NEWS2 Score ahead of signposting patient to A&E or calling 999.
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no"></div>
+
+        <div class="flow-row locked" id="node-2">
+            <div class="node bg-grey">
+                <h3>Check for any new signs/symptoms of PYELONEPHRITIS:</h3>
+                <div style="text-align: left;">
+                    ☐ Kidney pain/tenderness<br>
+                    ☐ Flu like illness<br>
+                    ☐ Shaking chills / temp 37.9°C+<br>
+                    ☐ Nausea/vomiting
+                </div>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'YES', 'node-2-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'NO', 'node-3')">NO</button>
+                </div>
+            </div>
+            
+            <div class="side-branch locked" id="node-2-side">
+                <div class="connector-line"></div>
+                <div class="node bg-light-blue" style="width: 200px;">
+                    Urgent same day referral<br>
+                    • General practice<br>
+                    • Out of hours
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no"></div>
+
+        <div class="flow-row locked" id="node-3">
+            <div class="node bg-grey" style="width: 450px;">
+                Does the patient have ANY of the following:
+                <div style="text-align: left; font-size: 0.9em; margin-top:10px;">
+                    ☐ Vaginal discharge<br>
+                    ☐ Urethritis<br>
+                    ☐ Sexually transmitted infections risk<br>
+                    ☐ Pregnancy signs/symptoms<br>
+                    ☐ Genitourinary syndrome of menopause<br>
+                    ☐ Immunosuppressed
+                </div>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-3', 'YES', 'node-3-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-3', 'NO', 'node-4')">NO</button>
+                </div>
+            </div>
+            
+            <div class="side-branch locked" id="node-3-side">
+                <div class="connector-line"></div>
+                <div class="node bg-light-blue" style="width: 200px;">
+                    Onward referral<br>
+                    • General practice<br>
+                    • Sexual health clinics
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no"></div>
+
+        <div class="gateway locked" id="gateway-point">Gateway Point</div>
+        
+        <div class="flow-row locked" id="node-4">
+            <div class="node bg-teal" style="width: 800px;">
+                <h3>Does the patient have any of the 3 key diagnostic signs/symptoms</h3>
+                ☐ Dysuria (burning pain when passing urine)<br>
+                ☐ New nocturia (needing to pass urine in the night)<br>
+                ☐ Urine cloudy to the naked eye
+                <div class="action-btns" style="margin-top: 20px;">
+                    <button class="flow-btn" onclick="makeChoice('node-4', '0', 'col-1')">0 Symptoms</button>
+                    <button class="flow-btn" onclick="makeChoice('node-4', '1', 'col-2')">1 Symptom</button>
+                    <button class="flow-btn" onclick="makeChoice('node-4', '2', 'col-3')">2 or 3 Symptoms</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="three-columns">
+            
+            <div class="col locked" id="col-1">
+                <div class="down-arrow"></div>
+                <div class="node bg-teal" style="text-align: left;">
+                    Are there other urinary symptoms:<br>
+                    ☐ Urgency<br>☐ Frequency<br>☐ Visible haematuria<br>☐ Suprapubic pain
+                    <div class="action-btns">
+                        <button class="flow-btn" onclick="makeChoice('col-1', 'YES', 'col-2-referral')">YES</button>
+                        <button class="flow-btn" onclick="makeChoice('col-1', 'NO', 'col-1-end')">NO</button>
+                    </div>
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-green locked" id="col-1-end">
+                    UTI less likely<br><br>
+                    <strong>Self-care and pain relief</strong>
+                </div>
+            </div>
+
+            <div class="col locked" id="col-2">
+                <div class="down-arrow"></div>
+                <div class="node bg-green" style="background-color: #8f9779;">
+                    Shared decision making approach using TARGET UTI resources
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-light-blue" id="col-2-referral">
+                    In patients that describe their symptoms as mild consider pain relief and self care as first line treatment.
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-coral">
+                    Ask patient to return to Pharmacy if no improvement in 48 hours.
+                </div>
+            </div>
+
+            <div class="col locked" id="col-3">
+                <div class="down-arrow"></div>
+                <div class="node bg-light-blue">
+                    In patients with moderate to severe symptoms, offer nitrofurantoin for 3 days plus self-care.
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-light-blue">
+                    Onward referral<br>
+                    • General Practice<br>
+                    • Other provider
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Interaction Logic
+        function makeChoice(parentNodeId, choice, targetNodeId) {
+            const parentNode = document.getElementById(parentNodeId);
+            const buttons = parentNode.querySelectorAll('button.flow-btn');
+            
+            // 1. Style the buttons to show what was clicked
+            buttons.forEach(btn => {
+                if (btn.innerText === choice || btn.innerText.includes(choice)) {
+                    btn.classList.add('selected');
+                    btn.classList.remove('disabled');
+                } else {
+                    btn.classList.remove('selected');
+                    btn.classList.add('disabled');
+                }
+            });
+
+            // 2. We need to "lock" everything below this point if they change their mind
+            // For a perfect implementation, you would track the active path.
+            // For this layout, we just unlock the specific target.
+            
+            // 3. Unlock the target node
+            const targetNode = document.getElementById(targetNodeId);
+            if (targetNode) {
+                targetNode.classList.remove('locked');
+                
+                // If the target is the main central path (Node 2, 3, 4), unlock the gateway point if needed
+                if (targetNodeId === 'node-4') {
+                    document.getElementById('gateway-point').classList.remove('locked');
+                }
+
+                // Scroll slightly so the user sees the new box unlock
+                targetNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    </script>
+</body>
+</html>\
