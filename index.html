@@ -3,475 +3,377 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pharmacy First Clinical Pathways</title>
+    <title>UTI Flowchart Layout</title>
     <style>
         :root {
-            --nhs-blue: #005EB8;
-            --nhs-dark-blue: #003087;
-            --nhs-green: #007F3B;
-            --nhs-red: #D5281B;
-            --grey: #E8EDEE;
-            --text-color: #231f20;
-            --alert-bg: #FFEB3B; 
-            --gateway-bg: #FFF9C4; 
-            --gateway-border: #FBC02D;
+            --bg-color: #f4f6f8;
+            --orange: #e27d60;
+            --grey-box: #8e8d8a;
+            --teal: #659dbd;
+            --light-blue: #a3c2de;
+            --green: #859a71;
+            --coral: #e8a87c;
+            --yellow: #fdf498;
+            --line-color: #ccc;
         }
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 800px;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .flowchart-container {
+            max-width: 1000px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
 
-        .header {
+        /* Base Node Styling */
+        .node {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             text-align: center;
-            border-bottom: 3px solid var(--nhs-blue);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            width: 350px;
+            font-size: 0.95em;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .header h1 { color: var(--nhs-blue); margin-bottom: 5px; }
-
-        #menu-container {
-            display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 30px;
+        .node h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: white;
         }
 
-        .menu-btn {
-            background-color: white; color: var(--nhs-blue); border: 2px solid var(--nhs-blue);
-            padding: 20px; font-size: 1.2em; font-weight: bold; border-radius: 8px;
-            cursor: pointer; transition: all 0.2s ease;
-        }
-
-        .menu-btn:hover { background-color: var(--nhs-blue); color: white; }
-
-        #pathway-wrapper { display: none; }
-
-        .controls { margin-bottom: 20px; }
-
-        .back-btn {
-            background-color: #768692; color: white; border: none; padding: 10px 15px;
-            border-radius: 4px; cursor: pointer; font-weight: bold;
-        }
-
-        #pathway-title { color: var(--nhs-dark-blue); margin-bottom: 20px; }
-
-        #pathway-content { display: flex; flex-direction: column; gap: 20px; }
-
-        .step-card {
-            background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s forwards ease-out;
-            border-left: 5px solid var(--nhs-blue);
-        }
-
-        .step-card.gateway {
-            background-color: var(--gateway-bg); border-left: 5px solid var(--gateway-border);
-        }
-
-        .gateway-badge {
-            background-color: var(--gateway-border); color: #333; font-size: 0.8em;
-            font-weight: bold; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px;
-        }
-
-        .step-question { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; white-space: pre-wrap; }
-
-        .options-container { display: flex; flex-wrap: wrap; gap: 10px; }
-
-        button.option-btn {
-            background-color: var(--nhs-blue); color: white; border: none; padding: 12px 24px;
-            font-size: 1em; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s;
-        }
-
-        button.option-btn:hover { background-color: var(--nhs-dark-blue); }
-        button.option-btn.disabled { background-color: var(--grey); color: #768692; pointer-events: none; opacity: 0.6; }
-        button.option-btn.selected { background-color: var(--nhs-dark-blue); outline: 3px solid #FFB81C; outline-offset: 2px; }
-
-        /* Checkbox Styling */
-        .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .checkbox-item {
-            display: flex; align-items: flex-start; gap: 10px; background: #f9f9f9;
-            padding: 12px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: 0.2s;
-        }
-        .checkbox-item:hover { background: #f1f1f1; border-color: var(--nhs-blue); }
-        .checkbox-item input[type="checkbox"] { margin-top: 4px; transform: scale(1.3); cursor: pointer; }
-        .checkbox-label { font-size: 1em; cursor: pointer; }
+        /* Color Themes matching the screenshot */
+        .bg-orange { background-color: var(--orange); color: white; }
+        .bg-grey { background-color: var(--grey-box); color: white; }
+        .bg-teal { background-color: var(--teal); color: white; }
+        .bg-light-blue { background-color: var(--light-blue); color: #333; font-weight: bold; }
+        .bg-green { background-color: var(--green); color: white; }
+        .bg-coral { background-color: var(--coral); color: #333; }
         
-        button.continue-btn {
-            background-color: var(--nhs-green); color: white; border: none; padding: 12px 24px;
-            font-size: 1.1em; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%;
-        }
-        button.continue-btn:hover { background-color: #005a2b; }
-
-        .result-card {
-            background: var(--alert-bg); padding: 20px; border-radius: 8px; font-weight: bold;
-            color: #333; border-left: 5px solid #D32F2F; animation: fadeIn 0.4s forwards ease-out; white-space: pre-wrap;
-        }
-
-        .news2-btn {
-            background-color: var(--nhs-red); color: white; border: none; padding: 10px 20px;
-            font-size: 1em; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 15px;
+        /* Gateway Point */
+        .gateway {
+            background-color: var(--yellow);
+            border: 2px solid red;
+            color: red;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 4px;
+            margin-bottom: -10px;
+            z-index: 2;
         }
 
-        /* Modal Styling */
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.6); overflow: auto;
-        }
-        .modal-content {
-            background-color: white; margin: 5% auto; padding: 25px; border-radius: 8px;
-            width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .close-modal { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close-modal:hover { color: black; }
-        .calc-form-group { margin-bottom: 15px; }
-        .calc-form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
-        .calc-form-group input, .calc-form-group select {
-            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em;
+        /* Layout rows for branches */
+        .flow-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
         }
 
-        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        .side-branch {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
+
+        /* The drawn line for YES branches */
+        .connector-line {
+            width: 50px;
+            height: 2px;
+            background-color: var(--line-color);
+            position: relative;
+        }
+        
+        .connector-line::after {
+            content: "YES";
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            font-size: 0.8em;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* Downward lines connecting rows */
+        .down-arrow {
+            width: 2px;
+            height: 20px;
+            background-color: var(--line-color);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .down-arrow.has-no::after {
+            content: "NO";
+            position: absolute;
+            top: 0;
+            left: 10px;
+            font-size: 0.8em;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* Three Column Layout for the bottom half */
+        .three-columns {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .col .node {
+            width: 90%;
+        }
+
+        /* Buttons */
+        .action-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button.flow-btn {
+            background-color: white;
+            color: #333;
+            border: 2px solid transparent;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button.flow-btn:hover {
+            background-color: #eee;
+        }
+
+        button.flow-btn.selected {
+            border: 3px solid #000;
+            background-color: #e0e0e0;
+        }
+
+        button.flow-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- THE LOCKING MECHANISM --- */
+        .locked {
+            opacity: 0.3;
+            pointer-events: none;
+            filter: grayscale(80%);
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Pharmacy First Clinical Pathways</h1>
-        <p>Interactive Diagnostic Tool</p>
-    </div>
+    <h2 style="text-align: center; color: #005EB8;">Uncomplicated Urinary Tract Infection</h2>
+    
+    <div class="flowchart-container">
 
-    <div id="menu-container"></div>
-
-    <div id="pathway-wrapper">
-        <div class="controls">
-            <button class="back-btn" onclick="showMenu()">← Back to Menu / Start Over</button>
-        </div>
-        <h2 id="pathway-title">Pathway Title</h2>
-        <div id="pathway-content"></div>
-    </div>
-
-    <div id="news2-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeNews2()">&times;</span>
-            <h2 style="color: var(--nhs-blue); margin-top: 0;">NEWS2 Calculator</h2>
-            <p>Standard scale calculation.</p>
-            
-            <div class="calc-form-group">
-                <label>Respiration Rate (breaths/min)</label>
-                <input type="number" id="n-rr" placeholder="e.g. 16">
-            </div>
-            <div class="calc-form-group">
-                <label>SpO2 (%)</label>
-                <input type="number" id="n-spo2" placeholder="e.g. 98">
-            </div>
-            <div class="calc-form-group">
-                <label>Systolic Blood Pressure (mmHg)</label>
-                <input type="number" id="n-sbp" placeholder="e.g. 120">
-            </div>
-            <div class="calc-form-group">
-                <label>Pulse (beats/min)</label>
-                <input type="number" id="n-hr" placeholder="e.g. 75">
-            </div>
-            <div class="calc-form-group">
-                <label>Temperature (°C)</label>
-                <input type="number" step="0.1" id="n-temp" placeholder="e.g. 37.2">
+        <div class="flow-row" id="row-1">
+            <div class="node bg-orange" id="node-1">
+                Consider the risk of deterioration or serious illness
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'YES', 'node-1-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'NO', 'node-2')">NO</button>
+                </div>
             </div>
             
-            <button class="continue-btn" onclick="calculateNews2()">Calculate Score</button>
+            <div class="side-branch locked" id="node-1-side">
+                <div class="connector-line"></div>
+                <div class="node bg-orange" style="width: 250px;">
+                    Consider calculating NEWS2 Score ahead of signposting patient to A&E or calling 999.
+                </div>
+            </div>
         </div>
+
+        <div class="down-arrow has-no"></div>
+
+        <div class="flow-row locked" id="node-2">
+            <div class="node bg-grey">
+                <h3>Check for any new signs/symptoms of PYELONEPHRITIS:</h3>
+                <div style="text-align: left;">
+                    ☐ Kidney pain/tenderness<br>
+                    ☐ Flu like illness<br>
+                    ☐ Shaking chills / temp 37.9°C+<br>
+                    ☐ Nausea/vomiting
+                </div>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'YES', 'node-2-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'NO', 'node-3')">NO</button>
+                </div>
+            </div>
+            
+            <div class="side-branch locked" id="node-2-side">
+                <div class="connector-line"></div>
+                <div class="node bg-light-blue" style="width: 200px;">
+                    Urgent same day referral<br>
+                    • General practice<br>
+                    • Out of hours
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no"></div>
+
+        <div class="flow-row locked" id="node-3">
+            <div class="node bg-grey" style="width: 450px;">
+                Does the patient have ANY of the following:
+                <div style="text-align: left; font-size: 0.9em; margin-top:10px;">
+                    ☐ Vaginal discharge<br>
+                    ☐ Urethritis<br>
+                    ☐ Sexually transmitted infections risk<br>
+                    ☐ Pregnancy signs/symptoms<br>
+                    ☐ Genitourinary syndrome of menopause<br>
+                    ☐ Immunosuppressed
+                </div>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-3', 'YES', 'node-3-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-3', 'NO', 'node-4')">NO</button>
+                </div>
+            </div>
+            
+            <div class="side-branch locked" id="node-3-side">
+                <div class="connector-line"></div>
+                <div class="node bg-light-blue" style="width: 200px;">
+                    Onward referral<br>
+                    • General practice<br>
+                    • Sexual health clinics
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no"></div>
+
+        <div class="gateway locked" id="gateway-point">Gateway Point</div>
+        
+        <div class="flow-row locked" id="node-4">
+            <div class="node bg-teal" style="width: 800px;">
+                <h3>Does the patient have any of the 3 key diagnostic signs/symptoms</h3>
+                ☐ Dysuria (burning pain when passing urine)<br>
+                ☐ New nocturia (needing to pass urine in the night)<br>
+                ☐ Urine cloudy to the naked eye
+                <div class="action-btns" style="margin-top: 20px;">
+                    <button class="flow-btn" onclick="makeChoice('node-4', '0', 'col-1')">0 Symptoms</button>
+                    <button class="flow-btn" onclick="makeChoice('node-4', '1', 'col-2')">1 Symptom</button>
+                    <button class="flow-btn" onclick="makeChoice('node-4', '2', 'col-3')">2 or 3 Symptoms</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="three-columns">
+            
+            <div class="col locked" id="col-1">
+                <div class="down-arrow"></div>
+                <div class="node bg-teal" style="text-align: left;">
+                    Are there other urinary symptoms:<br>
+                    ☐ Urgency<br>☐ Frequency<br>☐ Visible haematuria<br>☐ Suprapubic pain
+                    <div class="action-btns">
+                        <button class="flow-btn" onclick="makeChoice('col-1', 'YES', 'col-2-referral')">YES</button>
+                        <button class="flow-btn" onclick="makeChoice('col-1', 'NO', 'col-1-end')">NO</button>
+                    </div>
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-green locked" id="col-1-end">
+                    UTI less likely<br><br>
+                    <strong>Self-care and pain relief</strong>
+                </div>
+            </div>
+
+            <div class="col locked" id="col-2">
+                <div class="down-arrow"></div>
+                <div class="node bg-green" style="background-color: #8f9779;">
+                    Shared decision making approach using TARGET UTI resources
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-light-blue" id="col-2-referral">
+                    In patients that describe their symptoms as mild consider pain relief and self care as first line treatment.
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-coral">
+                    Ask patient to return to Pharmacy if no improvement in 48 hours.
+                </div>
+            </div>
+
+            <div class="col locked" id="col-3">
+                <div class="down-arrow"></div>
+                <div class="node bg-light-blue">
+                    In patients with moderate to severe symptoms, offer nitrofurantoin for 3 days plus self-care.
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-light-blue">
+                    Onward referral<br>
+                    • General Practice<br>
+                    • Other provider
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
     <script>
-        // 1. THE DATA
-        const pathwaysDB = {
-            "uti": {
-                title: "Uncomplicated Urinary Tract Infection",
-                nodes: {
-                    "start": {
-                        question: "Consider the risk of deterioration, red flags or serious illness.",
-                        isGateway: true,
-                        options: [
-                            { label: "YES (Patient at risk)", nextId: "urgent_referral" },
-                            { label: "NO (No immediate red flags)", nextId: "pyelonephritis" }
-                        ]
-                    },
-                    "urgent_referral": {
-                        isResult: true,
-                        text: "Urgent same day referral:\n• General practice\n• Relevant out of hours service",
-                        needsNews2: true 
-                    },
-                    "pyelonephritis": {
-                        type: "checkbox",
-                        question: "Check for any new signs/symptoms of PYELONEPHRITIS:",
-                        symptoms: [
-                            "Kidney pain/tenderness in back under ribs",
-                            "Flu like illness",
-                            "Shaking chills (rigors) or temperature 37.9°C or above",
-                            "Nausea/vomiting"
-                        ],
-                        logic: [
-                            { condition: ">=", count: 1, nextId: "urgent_referral" },
-                            { condition: "==", count: 0, nextId: "exclusions" }
-                        ]
-                    },
-                    "exclusions": {
-                        type: "checkbox",
-                        question: "Does the patient have ANY of the following exclusions:",
-                        symptoms: [
-                            "Vaginal discharge: 80% do not have UTI",
-                            "Urethritis (caused by irritation or inflammation)",
-                            "Sexually transmitted infection risk",
-                            "Signs or symptoms of pregnancy",
-                            "Genitourinary syndrome of menopause (vulvovaginal atrophy)",
-                            "Patient is immunosuppressed"
-                        ],
-                        logic: [
-                            { condition: ">=", count: 1, nextId: "onward_referral" },
-                            { condition: "==", count: 0, nextId: "diagnostic_signs" }
-                        ]
-                    },
-                    "onward_referral": {
-                        isResult: true,
-                        text: "Onward referral:\n• General practice\n• Sexual health clinics\n• Other provider as appropriate"
-                    },
-                    "diagnostic_signs": {
-                        type: "checkbox",
-                        isGateway: true,
-                        question: "Select any of the 3 key diagnostic signs/symptoms present:",
-                        symptoms: [
-                            "Dysuria (Acute pain or burning sensation when passing urine or at the end of urination)",
-                            "New nocturia (needing to pass urine in the night)",
-                            "Urine cloudy to the naked eye"
-                        ],
-                        logic: [
-                            { condition: "==", count: 0, nextId: "no_symptom" },
-                            { condition: "==", count: 1, nextId: "one_symptom" },
-                            { condition: ">=", count: 2, nextId: "two_symptoms" }
-                        ]
-                    },
-                    "no_symptom": {
-                        type: "checkbox",
-                        question: "Are there other urinary symptoms present?",
-                        symptoms: [
-                            "Urgency",
-                            "Frequency",
-                            "Visible haematuria",
-                            "Suprapubic pain/tenderness"
-                        ],
-                        logic: [
-                            { condition: ">=", count: 1, nextId: "uti_equally_likely" },
-                            { condition: "==", count: 0, nextId: "uti_less_likely" }
-                        ]
-                    },
-                    "uti_equally_likely": {
-                        isResult: true,
-                        text: "UTI equally likely to other diagnosis.\n\nOnward referral:\n• General practice\n• Sexual health clinics\n• Other provider as appropriate\n\nFOR ALL PATIENTS: share self-care and safety-netting advice using TARGET UTI leaflet."
-                    },
-                    "uti_less_likely": {
-                        isResult: true,
-                        text: "UTI less likely.\n\nSelf-care and pain relief.\n\nFOR ALL PATIENTS: share self-care and safety-netting advice using TARGET UTI leaflet."
-                    },
-                    "one_symptom": {
-                        isResult: true,
-                        text: "Shared decision making approach using TARGET UTI resources.\n\nIn patients that describe their symptoms as mild consider pain relief and self care as first line treatment.\n\nAsk patient to return to Pharmacy if no improvement in 48 hours for pharmacist reassessment.\n\nFOR ALL PATIENTS: share self-care and safety-netting advice."
-                    },
-                    "two_symptoms": {
-                        isResult: true,
-                        text: "In patients with moderate to severe symptoms, offer nitrofurantoin for 3 days (subject to inclusion/exclusion criteria in PGD) plus self-care.\n\nFOR ALL PATIENTS: If symptoms worsen rapidly or significantly at any time, OR do not improve in 48 hours of taking antibiotics -> Onward referral.\n\nFOR ALL PATIENTS: share self-care and safety-netting advice using TARGET UTI leaflet."
-                    }
-                }
-            }
-        };
-
-        // 2. THE ENGINE
-        const menuContainer = document.getElementById('menu-container');
-        const pathwayWrapper = document.getElementById('pathway-wrapper');
-        const pathwayTitle = document.getElementById('pathway-title');
-        const pathwayContent = document.getElementById('pathway-content');
-        let currentPathwayId = null;
-        let renderedNodes = [];
-
-        function initMenu() {
-            menuContainer.innerHTML = ''; 
-            for (const [key, pathway] of Object.entries(pathwaysDB)) {
-                if(Object.keys(pathway.nodes).length > 0) {
-                    const btn = document.createElement('button');
-                    btn.className = 'menu-btn';
-                    btn.innerText = pathway.title;
-                    btn.onclick = () => loadPathway(key);
-                    menuContainer.appendChild(btn);
-                }
-            }
-        }
-
-        function loadPathway(pathwayKey) {
-            currentPathwayId = pathwayKey;
-            const pathwayData = pathwaysDB[pathwayKey];
-            menuContainer.style.display = 'none';
-            pathwayWrapper.style.display = 'block';
-            pathwayTitle.innerText = pathwayData.title;
-            pathwayContent.innerHTML = '';
-            renderedNodes = [];
-            renderNode('start');
-        }
-
-        function showMenu() {
-            pathwayWrapper.style.display = 'none';
-            menuContainer.style.display = 'grid';
-            currentPathwayId = null;
-        }
-
-        function clearBelow(nodeId) {
-            const currentIndex = renderedNodes.indexOf(nodeId);
-            if (currentIndex > -1) {
-                const nodesToRemove = renderedNodes.splice(currentIndex + 1);
-                nodesToRemove.forEach(id => {
-                    const el = document.getElementById(`step-${id}`);
-                    if (el) el.remove();
-                });
-            }
-        }
-
-        function renderNode(nodeId) {
-            const pathwayData = pathwaysDB[currentPathwayId];
-            const nodeData = pathwayData.nodes[nodeId];
-            if (!nodeData) return;
-
-            const stepDiv = document.createElement('div');
-            stepDiv.id = `step-${nodeId}`;
-            renderedNodes.push(nodeId);
-
-            // RENDER RESULT CARDS & NEWS2 BUTTON
-            if (nodeData.isResult) {
-                stepDiv.className = 'result-card';
-                stepDiv.innerText = nodeData.text;
-                
-                if(nodeData.needsNews2) {
-                    const newsBtn = document.createElement('button');
-                    newsBtn.className = 'news2-btn';
-                    newsBtn.innerText = "🧮 Calculate NEWS2 Score";
-                    newsBtn.onclick = () => document.getElementById('news2-modal').style.display = "block";
-                    stepDiv.appendChild(document.createElement('br'));
-                    stepDiv.appendChild(newsBtn);
-                }
-
-                pathwayContent.appendChild(stepDiv);
-                stepDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                return;
-            }
-
-            // RENDER QUESTION CARDS
-            stepDiv.className = 'step-card';
-            if (nodeData.isGateway) {
-                stepDiv.classList.add('gateway');
-                const badge = document.createElement('div');
-                badge.className = 'gateway-badge';
-                badge.innerText = 'Gateway Point';
-                stepDiv.appendChild(badge);
-            }
+        // Interaction Logic
+        function makeChoice(parentNodeId, choice, targetNodeId) {
+            const parentNode = document.getElementById(parentNodeId);
+            const buttons = parentNode.querySelectorAll('button.flow-btn');
             
-            const questionText = document.createElement('div');
-            questionText.className = 'step-question';
-            questionText.innerText = nodeData.question;
-            stepDiv.appendChild(questionText);
+            // 1. Style the buttons to show what was clicked
+            buttons.forEach(btn => {
+                if (btn.innerText === choice || btn.innerText.includes(choice)) {
+                    btn.classList.add('selected');
+                    btn.classList.remove('disabled');
+                } else {
+                    btn.classList.remove('selected');
+                    btn.classList.add('disabled');
+                }
+            });
 
-            // RENDER CHECKBOXES
-            if (nodeData.type === "checkbox") {
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'checkbox-group';
+            // 2. We need to "lock" everything below this point if they change their mind
+            // For a perfect implementation, you would track the active path.
+            // For this layout, we just unlock the specific target.
+            
+            // 3. Unlock the target node
+            const targetNode = document.getElementById(targetNodeId);
+            if (targetNode) {
+                targetNode.classList.remove('locked');
                 
-                nodeData.symptoms.forEach((symp, index) => {
-                    const label = document.createElement('label');
-                    label.className = 'checkbox-item';
-                    
-                    const cb = document.createElement('input');
-                    cb.type = 'checkbox';
-                    cb.value = index;
-                    cb.className = `cb-${nodeId}`;
-                    cb.onchange = () => clearBelow(nodeId);
-                    
-                    const span = document.createElement('span');
-                    span.className = 'checkbox-label';
-                    span.innerText = symp;
+                // If the target is the main central path (Node 2, 3, 4), unlock the gateway point if needed
+                if (targetNodeId === 'node-4') {
+                    document.getElementById('gateway-point').classList.remove('locked');
+                }
 
-                    label.appendChild(cb);
-                    label.appendChild(span);
-                    groupDiv.appendChild(label);
-                });
-
-                const evalBtn = document.createElement('button');
-                evalBtn.className = 'continue-btn';
-                evalBtn.innerText = "Confirm Selection";
-                evalBtn.onclick = () => {
-                    clearBelow(nodeId);
-                    let checkedCount = 0;
-                    document.querySelectorAll(`.cb-${nodeId}`).forEach(cb => { if(cb.checked) checkedCount++; });
-
-                    evalBtn.innerText = "Confirmed (" + checkedCount + " Selected)";
-                    evalBtn.style.backgroundColor = "#768692";
-
-                    for (let rule of nodeData.logic) {
-                        if (rule.condition === "==" && checkedCount === rule.count) {
-                            renderNode(rule.nextId); return;
-                        }
-                        if (rule.condition === ">=" && checkedCount >= rule.count) {
-                            renderNode(rule.nextId); return;
-                        }
-                    }
-                };
-
-                stepDiv.appendChild(groupDiv);
-                stepDiv.appendChild(evalBtn);
-            } 
-            // RENDER STANDARD BUTTONS
-            else if (nodeData.options) {
-                const optionsContainer = document.createElement('div');
-                optionsContainer.className = 'options-container';
-
-                nodeData.options.forEach((option, index) => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.innerText = option.label;
-                    btn.onclick = () => {
-                        clearBelow(nodeId);
-                        
-                        // Grey out unselected options
-                        const allBtns = optionsContainer.querySelectorAll('.option-btn');
-                        allBtns.forEach((b, i) => {
-                            if (i === index) {
-                                b.classList.add('selected');
-                                b.classList.remove('disabled');
-                            } else {
-                                b.classList.add('disabled');
-                                b.classList.remove('selected');
-                            }
-                        });
-
-                        renderNode(option.nextId);
-                    };
-                    optionsContainer.appendChild(btn);
-                });
-                stepDiv.appendChild(optionsContainer);
+                // Scroll slightly so the user sees the new box unlock
+                targetNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-
-            pathwayContent.appendChild(stepDiv);
-            stepDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-
-        // 3. NEWS2 CALCULATOR MODAL LOGIC
-        function closeNews2() {
-            document.getElementById("news2-modal").style.display = "none";
-        }
-
-        function calculateNews2() {
-            alert("This connects to the math logic for NEWS2 calculations. Ready to be programmed next!");
-        }
-
-        // Boot Application
-        initMenu();
-
     </script>
 </body>
-</html>
+</html>\
