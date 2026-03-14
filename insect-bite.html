@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infected Insect Bites Flowchart</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --orange: #e27d60;
+            --grey-box: #8e8d8a;
+            --teal: #659dbd;
+            --light-blue: #a3c2de;
+            --green: #859a71;
+            --coral: #e8a87c;
+            --yellow: #fdf498;
+            --line-color: #ccc;
+            --red-alert: #D5281B;
+        }
+
+        body { font-family: Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #333; }
+        
+        .back-nav { display:inline-block; margin-bottom: 20px; padding: 10px 15px; background: #768692; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; transition: 0.2s;}
+        .back-nav:hover { background: #4C6272; }
+
+        .flowchart-container { max-width: 1050px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+        .node { background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 450px; font-size: 0.95em; line-height: 1.4; transition: all 0.3s ease; position: relative; }
+        .node h3 { margin: 0 0 10px 0; font-size: 1.1em; color: white; }
+
+        .bg-orange { background-color: var(--orange); color: white; }
+        .bg-grey { background-color: var(--grey-box); color: white; }
+        .bg-teal { background-color: var(--teal); color: white; }
+        .bg-light-blue { background-color: var(--light-blue); color: #333; font-weight: bold; }
+        .bg-green { background-color: var(--green); color: white; }
+        .bg-red { background-color: var(--red-alert); color: white; }
+        .bg-coral { background-color: var(--coral); color: #333; }
+        
+        .gateway { background-color: var(--yellow); border: 2px solid red; color: red; font-weight: bold; padding: 5px 15px; border-radius: 4px; margin-bottom: -10px; z-index: 2; }
+
+        .flow-row { display: flex; justify-content: center; align-items: flex-start; width: 100%; position: relative; }
+        .side-branch { display: flex; align-items: center; margin-left: 20px; }
+        .vertical-branch { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+        .connector-line { width: 40px; height: 2px; background-color: var(--line-color); position: relative; margin-top: 30px;}
+        .connector-line.yes::after { content: "YES"; position: absolute; top: -20px; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+        .connector-line.no::after { content: "NO"; position: absolute; top: -20px; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+
+        .down-arrow { width: 2px; height: 20px; background-color: var(--line-color); margin: 0 auto; position: relative; }
+        .down-arrow.has-no::after { content: "NO"; position: absolute; top: 0; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+        .down-arrow.has-yes::after { content: "YES"; position: absolute; top: 0; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+
+        .action-btns { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;}
+        button.flow-btn { background-color: white; color: #333; border: 2px solid transparent; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button.flow-btn:hover { background-color: #eee; }
+        button.flow-btn.selected { border: 3px solid #000; background-color: #e0e0e0; }
+        button.flow-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .locked { opacity: 0.3; pointer-events: none; filter: grayscale(80%); display: none; }
+        .unlocked { display: flex; animation: fadeIn 0.4s ease-in-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); filter: grayscale(80%); }
+            to { opacity: 1; transform: translateY(0); filter: grayscale(0%); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-nav">← Back to Main Menu</a>
+
+    <h2 style="text-align: center; color: #005EB8; margin-top: 0;">Infected Insect Bites</h2>
+    <p style="text-align: center; color: #666; margin-top: -10px;">(For adults and children aged 1 year and over) [cite: 111]<br>Exclude: pregnant individuals under 16 years [cite: 112]</p>
+    
+    <div class="flowchart-container">
+
+        <div class="flow-row" id="row-1">
+            <div class="node bg-orange" id="node-1">
+                Consider the risk of deterioration, red flags or serious illness[cite: 117, 118]:
+                <ul style="text-align: left; font-size: 0.9em; margin-bottom: 0;">
+                    <li>Signs of systemic hypersensitivity reaction or anaphylaxis [cite: 121, 123]</li>
+                    <li>Severely immunosuppressed and have signs/symptoms of an infection [cite: 122, 125]</li>
+                    <li>Stings with risk of airway obstruction or concerns of orbital cellulitis [cite: 126]</li>
+                </ul>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'YES', 'node-1-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'NO', 'node-2')">NO</button>
+                </div>
+            </div>
+            
+            <div class="side-branch locked" id="node-1-side">
+                <div class="gateway" style="margin-left: -15px; margin-right: 5px; margin-bottom: 0;">Gateway Point</div>
+                <div class="connector-line yes"></div>
+                <div class="node bg-orange" style="width: 250px;">
+                    <strong>Administer adrenaline (if anaphylaxis) [cite: 124]</strong><br><br>
+                    Consider calculating NEWS2 Score ahead of signposting patient to A&E or calling 999[cite: 129].
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no locked" id="arrow-to-2"></div>
+
+        <div class="flow-row locked" id="node-2">
+            <div class="node bg-grey">
+                Does the patient meet ANY of the following criteria? [cite: 130]
+                <ul style="text-align: left; font-size: 0.9em; margin-bottom: 0;">
+                    <li>Bite or scratch caused by animal(s) or human(s) [cite: 131, 132]</li>
+                    <li>Bite by tick in the UK and signs of Lyme disease (erythema migrans) [cite: 135]</li>
+                    <li>Bite/sting while travelling outside UK (concern of malaria, tick borne encephalitis) [cite: 136]</li>
+                    <li>Bite or sting caused by an unusual or exotic insect [cite: 137]</li>
+                </ul>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'YES', 'node-2-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'NO', 'node-3')">NO</button>
+                </div>
+            </div>
+
+            <div class="side-branch locked" id="node-2-side">
+                <div class="connector-line yes"></div>
+                <div class="node bg-light-blue" style="width: 200px;">
+                    Onward referral<br>
+                    • General practice<br>
+                    • Other provider [cite: 146, 147]
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no locked" id="arrow-to-3"></div>
+
+        <div class="flow-row locked" id="node-3">
+            <div class="node bg-teal">
+                Has it been at least 48 hours after the initial insect bite or sting? [cite: 139]
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-3', 'YES', 'node-4')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-3', 'NO', 'node-3-side')">NO</button>
+                </div>
+            </div>
+
+            <div class="side-branch locked" id="node-3-side">
+                <div class="connector-line no"></div>
+                <div class="vertical-branch">
+                    <div class="node bg-teal" id="node-itch" style="width: 300px;">
+                        Is itch the principal symptom? [cite: 141]<br>
+                        <span style="font-size: 0.8em;">(In the absence of other signs of infection) [cite: 143]</span>
+                        <div class="action-btns">
+                            <button class="flow-btn" onclick="makeChoice('node-itch', 'YES', 'itch-yes-result')">YES</button>
+                            <button class="flow-btn" onclick="makeChoice('node-itch', 'NO', 'itch-no-result')">NO</button>
+                        </div>
+                    </div>
+                    
+                    <div class="node bg-green locked" id="itch-yes-result" style="width: 300px;">
+                        Skin redness and itching are common (lasts up to 10 days). Avoiding scratching reduces infection risk[cite: 181, 184, 190, 193].<br><br>
+                        <strong>Recommend self care, oral antihistamine and/or topical steroids over the counter[cite: 148].</strong>
+                    </div>
+
+                    <div class="node bg-coral locked" id="itch-no-result" style="width: 300px;">
+                        Infected insect bite less likely[cite: 150, 154].<br><br>
+                        <strong>Recommend self care, oral antihistamine and/or topical steroids over the counter[cite: 167].</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-yes locked" id="arrow-to-4"></div>
+
+        <div class="gateway locked" id="gateway-2" style="margin-bottom: -10px;">Gateway Point</div>
+        <div class="flow-row locked" id="node-4">
+            <div class="node bg-grey">
+                Does the patient have acute onset of <strong>≥3</strong> of the following symptoms of an infected insect bite? [cite: 151, 152]
+                <ul style="text-align: left; font-size: 0.9em; margin-bottom: 0;">
+                    <li>Redness of skin [cite: 151]</li>
+                    <li>Pain or tenderness to the area [cite: 154]</li>
+                    <li>Swelling of skin [cite: 155]</li>
+                    <li>Skin surrounding the bite feels hot to touch [cite: 158]</li>
+                </ul>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-4', 'YES', 'node-5')">YES (More Likely) [cite: 156, 157]</button>
+                    <button class="flow-btn" onclick="makeChoice('node-4', 'NO', 'node-4-side')">NO (Less Likely) [cite: 153, 154]</button>
+                </div>
+            </div>
+
+            <div class="side-branch locked" id="node-4-side">
+                <div class="connector-line no"></div>
+                <div class="node bg-coral" style="width: 300px;">
+                    Redness and swelling of skin surrounding the bite is spreading.<br><br>
+                    Clearly demarcate the area and ask patient to monitor[cite: 160, 161].<br><br>
+                    <strong>Recommend self care, oral antihistamine and/or topical steroids[cite: 168, 169]. Return if worsens or no improvement in 3 days[cite: 163, 164, 165].</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-yes locked" id="arrow-to-5"></div>
+
+        <div class="flow-row locked" id="node-5">
+            <div class="node bg-grey">
+                Does the patient meet ANY of the following criteria: [cite: 171]
+                <ul style="text-align: left; font-size: 0.9em; margin-bottom: 0;">
+                    <li>Patient systemically unwell [cite: 172]</li>
+                    <li>Known comorbidity which may complicate (e.g. peripheral arterial disease, chronic venous insufficiency, lymphoedema or morbid obesity) [cite: 176, 177]</li>
+                    <li>Severe pain out of proportion to the wound [cite: 178]</li>
+                    <li>Patient has significant collection of fluid or pus [cite: 178]</li>
+                </ul>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-5', 'YES', 'node-5-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-5', 'NO', 'treatment-node')">NO</button>
+                </div>
+            </div>
+
+            <div class="side-branch locked" id="node-5-side">
+                <div class="connector-line yes"></div>
+                <div class="node bg-light-blue" style="width: 200px;">
+                    Onward referral<br>
+                    • General practice<br>
+                    • Other provider [cite: 179, 180]
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no locked" id="arrow-to-treat"></div>
+
+        <div class="flow-row locked" id="treatment-node">
+            <div class="vertical-branch">
+                <div class="node bg-green" style="width: 500px;">
+                    <strong>Offer flucloxacillin (if no allergy) for 5 days plus self care[cite: 195].</strong>
+                </div>
+                
+                <div class="down-arrow"></div>
+                
+                <div class="node bg-red" id="allergy-node" style="width: 500px;">
+                    <strong>Reported penicillin allergy? [cite: 196]</strong>
+                    <div class="action-btns">
+                        <button class="flow-btn" onclick="makeChoice('allergy-node', 'YES', 'allergy-split')">YES</button>
+                    </div>
+                </div>
+
+                <div class="locked" id="allergy-split" style="display: flex; gap: 20px; width: 100%; justify-content: center; margin-top: 10px;">
+                    <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+                        <div class="down-arrow"></div>
+                        <div class="node bg-light-blue" style="width: 200px;">
+                            Offer <strong>clarithromycin</strong> for 5 days plus self care[cite: 199, 203].
+                        </div>
+                    </div>
+                    <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+                        <div class="down-arrow" style="height: 40px;"><span style="position: absolute; left: 5px; top: 5px; font-size: 0.7em; color: #666; width: 60px;">If pregnant [cite: 202]</span></div>
+                        <div class="node bg-light-blue" style="width: 200px;">
+                            Offer <strong>erythromycin</strong> for 5 days plus self care[cite: 205, 207].
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="locked" id="safety-net" style="margin-top: 30px; margin-bottom: 40px;">
+            <div class="node bg-orange" style="width: 600px; padding: 20px;">
+                <strong>SAFETY NETTING:</strong><br>
+                If symptoms worsen rapidly or significantly at any time, OR do not improve after completion of 5 days treatment course -> <strong>Onward referral</strong>[cite: 208, 209, 210].
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function makeChoice(parentNodeId, choice, targetNodeId) {
+            const parentNode = document.getElementById(parentNodeId);
+            const buttons = parentNode.querySelectorAll('button.flow-btn');
+            
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(choice)) {
+                    btn.classList.add('selected');
+                    btn.classList.remove('disabled');
+                } else {
+                    btn.classList.remove('selected');
+                    btn.classList.add('disabled');
+                }
+            });
+            
+            // Unlock target node
+            const targetNode = document.getElementById(targetNodeId);
+            if (targetNode) {
+                targetNode.classList.remove('locked');
+                targetNode.classList.add('unlocked');
+                
+                // If it's a main central path unlock, also unlock the connecting downward arrow
+                if(choice === 'NO' && parentNodeId === 'node-1') document.getElementById('arrow-to-2').classList.add('unlocked');
+                if(choice === 'NO' && parentNodeId === 'node-2') document.getElementById('arrow-to-3').classList.add('unlocked');
+                if(choice === 'YES' && parentNodeId === 'node-3') document.getElementById('arrow-to-4').classList.add('unlocked');
+                if(choice === 'YES' && parentNodeId === 'node-4') document.getElementById('arrow-to-5').classList.add('unlocked');
+                if(choice === 'NO' && parentNodeId === 'node-5') document.getElementById('arrow-to-treat').classList.add('unlocked');
+                
+                // Show safety netting at the end of the treatment chain
+                if(targetNodeId === 'treatment-node' || targetNodeId === 'allergy-split') {
+                    document.getElementById('safety-net').classList.remove('locked');
+                    document.getElementById('safety-net').classList.add('unlocked');
+                }
+
+                // Scroll specific elements into view
+                if(targetNodeId === 'gateway-2') {
+                    document.getElementById('node-4').classList.remove('locked');
+                    document.getElementById('node-4').classList.add('unlocked');
+                }
+
+                setTimeout(() => {
+                    targetNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        }
+    </script>
+</body>
+</html>
