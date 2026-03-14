@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acute Sinusitis Flowchart</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --orange: #e27d60;
+            --grey-box: #8e8d8a;
+            --teal: #659dbd;
+            --light-blue: #a3c2de;
+            --green: #859a71;
+            --coral: #e8a87c;
+            --yellow: #fdf498;
+            --line-color: #ccc;
+            --red-alert: #D5281B;
+        }
+
+        body { font-family: Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #333; }
+        
+        .back-nav { display:inline-block; margin-bottom: 20px; padding: 10px 15px; background: #768692; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; transition: 0.2s;}
+        .back-nav:hover { background: #4C6272; }
+
+        .flowchart-container { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+        .node { background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 480px; font-size: 0.95em; line-height: 1.4; transition: all 0.3s ease; position: relative; }
+        .node h3 { margin: 0 0 10px 0; font-size: 1.1em; color: white; }
+
+        .bg-orange { background-color: var(--orange); color: white; }
+        .bg-grey { background-color: var(--grey-box); color: white; }
+        .bg-teal { background-color: var(--teal); color: white; }
+        .bg-light-blue { background-color: var(--light-blue); color: #333; font-weight: bold; }
+        .bg-green { background-color: var(--green); color: white; }
+        .bg-red { background-color: var(--red-alert); color: white; }
+        .bg-coral { background-color: var(--coral); color: #333; }
+        
+        .gateway { background-color: var(--yellow); border: 2px solid red; color: red; font-weight: bold; padding: 5px 15px; border-radius: 4px; margin-bottom: -10px; z-index: 2; }
+
+        .flow-row { display: flex; justify-content: center; align-items: flex-start; width: 100%; position: relative; }
+        .side-branch { display: flex; align-items: center; margin-left: 20px; }
+        .vertical-branch { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+        .connector-line { width: 40px; height: 2px; background-color: var(--line-color); position: relative; margin-top: 30px;}
+        .connector-line.yes::after { content: "YES"; position: absolute; top: -20px; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+        .connector-line.no::after { content: "NO"; position: absolute; top: -20px; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+
+        .down-arrow { width: 2px; height: 20px; background-color: var(--line-color); margin: 0 auto; position: relative; }
+        .down-arrow.has-no::after { content: "NO"; position: absolute; top: 0; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+        .down-arrow.has-yes::after { content: "YES"; position: absolute; top: 0; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+
+        .split-columns { display: flex; justify-content: center; align-items: flex-start; width: 100%; gap: 30px; margin-top: 10px; }
+        .col { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 400px; }
+
+        .action-btns { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;}
+        button.flow-btn { background-color: white; color: #333; border: 2px solid transparent; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button.flow-btn:hover { background-color: #eee; }
+        button.flow-btn.selected { border: 3px solid #000; background-color: #e0e0e0; }
+        button.flow-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .locked { opacity: 0.3; pointer-events: none; filter: grayscale(80%); display: none; }
+        .unlocked { display: flex; animation: fadeIn 0.4s ease-in-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); filter: grayscale(80%); }
+            to { opacity: 1; transform: translateY(0); filter: grayscale(0%); }
+        }
+
+        /* NEWS2 Modal Styles */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); overflow: auto; }
+        .modal-content { background-color: white; margin: 5% auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); font-family: Arial, sans-serif;}
+        .close-modal { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-modal:hover { color: black; }
+        .calc-form-group { margin-bottom: 12px; }
+        .calc-form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9em;}
+        .calc-form-group input, .calc-form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        #news2-result { margin-top: 15px; padding: 15px; border-radius: 6px; font-size: 1.2em; font-weight: bold; text-align: center; display: none; }
+        .btn-news { background-color: var(--red-alert); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px;}
+        .btn-news:hover { background-color: #b71c1c; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-nav">← Back to Main Menu</a>
+
+    <h2 style="text-align: center; color: #005EB8; margin-top: 0;">Acute Sinusitis</h2>
+    <p style="text-align: center; color: #666; margin-top: -10px; font-size: 0.9em;">
+        (For adults and children aged 12 years and over)<br>
+        Exclude: immunosuppressed, chronic sinusitis (>12 weeks), pregnant individuals under 16 years.<br>
+        <em>Acute sinusitis is usually caused by a virus and is only complicated by bacterial infection in about 2 in 100 cases.</em>
+    </p>
+    
+    <div class="flowchart-container">
+
+        <div class="flow-row" id="row-1">
+            <div class="node bg-orange" id="node-1">
+                Consider the risk of deterioration, red flags or serious illness:
+                <ul style="text-align: left; font-size: 0.9em; margin-bottom: 0;">
+                    <li><strong>Intraorbital/periorbital complications:</strong> orbital cellulitis, displaced eyeball, reduced vision</li>
+                    <li><strong>Intracranial complications:</strong> swelling over the frontal bone</li>
+                    <li><strong>Signs of meningitis:</strong> severe frontal headache, or focal neurological signs</li>
+                </ul>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'YES', 'node-1-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'NO', 'node-2')">NO</button>
+                </div>
+            </div>
+            
+            <div class="side-branch locked" id="node-1-side">
+                <div class="gateway" style="margin-left: -15px; margin-right: 5px; margin-bottom: 0;">Gateway Point</div>
+                <div class="connector-line yes"></div>
+                <div class="node bg-orange" style="width: 250px;">
+                    Consider calculating NEWS2 Score ahead of signposting patient to A&E or calling 999.
+                    <button class="btn-news" style="margin-top: 15px;" onclick="openNewsModal()">🧮 Calculate NEWS2 Score</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no locked" id="arrow-to-2"></div>
+
+        <div class="flow-row locked" id="node-2">
+            <div class="node bg-grey">
+                Diagnose acute sinusitis by the presence of <strong>ONE or more</strong> of:
+                <ul style="text-align: left; font-size: 0.9em; margin-top: 5px; margin-bottom: 5px;">
+                    <li>Nasal blockage (obstruction/congestion) <em>OR</em> nasal discharge</li>
+                </ul>
+                <strong>WITH ONE or more of:</strong>
+                <ul style="text-align: left; font-size: 0.9em; margin-top: 5px; margin-bottom: 0;">
+                    <li>Facial pain/pressure (or headache) <em>OR</em></li>
+                    <li>Reduction (or loss) of the sense of smell (in adults) <em>OR</em></li>
+                    <li>Cough during the day or at night (in children)</li>
+                </ul>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'Criteria Met', 'node-3')">Criteria Met (YES)</button>
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'Not Met', 'node-2-side')">Criteria Not Met (NO)</button>
+                </div>
+            </div>
+
+            <div class="side-branch locked" id="node-2-side">
+                <div class="connector-line no"></div>
+                <div class="node bg-green" style="background-color: #8f9779; width: 220px;">
+                    Acute sinusitis less likely.<br><br>Consider alternative diagnosis and proceed appropriately.
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-yes locked" id="arrow-to-3"></div>
+
+        <div class="gateway locked" id="gateway-duration" style="margin-bottom: -10px;">Gateway Point</div>
+        <div class="flow-row locked" id="node-3">
+            <div class="node bg-teal">
+                Has the patient had symptoms for <strong>≤ 10 days?</strong>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-3', 'YES (<= 10)', 'node-3-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-3', 'NO (> 10)', 'node-4')">NO</button>
+                </div>
+            </div>
+
+            <div class="side-branch locked" id="node-3-side">
+                <div class="connector-line yes"></div>
+                <div class="vertical-branch">
+                    <div class="node bg-light-blue" style="width: 250px;">
+                        <strong>Self-care and regular pain relief</strong>
+                    </div>
+                    <div class="down-arrow"></div>
+                    <div class="node bg-coral" style="width: 250px; text-align: left;">
+                        • Antibiotic is not needed<br>
+                        • Sinusitis usually lasts 2-3 weeks<br>
+                        • Manage symptoms with self-care<br>
+                        • Safety netting advice
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no locked" id="arrow-to-4"></div>
+
+        <div class="flow-row locked" id="node-4">
+            <div class="node bg-grey">
+                Has the patient had symptoms for <strong>> 10 days with no improvement?</strong>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-4', 'YES', 'node-5')">YES</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-yes locked" id="arrow-to-5"></div>
+
+        <div class="flow-row locked" id="node-5">
+            <div class="node bg-teal">
+                Does the patient have <strong>2 or more</strong> of the following symptoms to suggest acute bacterial sinusitis?
+                <ul style="text-align: left; font-size: 0.9em; margin-bottom: 0;">
+                    <li>Marked deterioration after an initial milder phase</li>
+                    <li>Fever (>38°C)</li>
+                    <li>Unremitting purulent nasal discharge</li>
+                    <li>Severe localised unilateral pain, particularly over teeth/jaw</li>
+                </ul>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-5', '2 or more', 'treatment-path')">YES (≥2 Symptoms)</button>
+                    <button class="flow-btn" onclick="makeChoice('node-5', '0 or 1', 'node-5-side')">NO (≤1 Symptom)</button>
+                </div>
+            </div>
+
+            <div class="side-branch locked" id="node-5-side">
+                <div class="connector-line no"></div>
+                <div class="vertical-branch">
+                    <div class="node bg-light-blue" style="width: 250px;">
+                        <strong>Self care and pain relief</strong>
+                    </div>
+                    <div class="down-arrow"></div>
+                    <div class="node bg-coral" style="width: 250px;">
+                        • Acute sinusitis is usually viral.<br>
+                        • Antibiotics make little difference.<br><br>
+                        <strong>Ask patient to return to Pharmacy if symptoms do not improve in 7 days.</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-yes locked" id="arrow-to-treat"></div>
+
+        <div class="locked vertical-branch" id="treatment-path" style="width: 100%;">
+            <div class="node bg-teal" style="width: 600px;">
+                <strong>Shared decision making approach based on severity of symptoms.</strong>
+            </div>
+            
+            <div class="down-arrow"></div>
+            
+            <div class="node bg-light-blue" style="width: 600px;">
+                Offer <strong>high dose nasal corticosteroid</strong> (off-label) for 14 days (subject to inclusion/exclusion criteria in PGD) plus self care and pain relief <em>instead of antibiotics first line</em>.
+            </div>
+
+            <div class="down-arrow" style="height: 40px;"><span style="position: absolute; left: 10px; top: 10px; font-size: 0.8em; color: #666; width: 140px;">or if unsuitable/ineffective</span></div>
+            
+            <div class="node bg-light-blue" style="width: 600px;">
+                Offer <strong>phenoxymethylpenicillin</strong> (if no allergy) for 5 days plus self care.
+            </div>
+
+            <div class="down-arrow"></div>
+            
+            <div class="node bg-red" id="allergy-node" style="width: 600px;">
+                <strong>Reported penicillin allergy?</strong>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('allergy-node', 'YES (Allergic)', 'allergy-split')">YES</button>
+                </div>
+            </div>
+
+            <div class="locked" id="allergy-split" style="display: flex; gap: 20px; width: 640px; justify-content: center; margin-top: 10px;">
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+                    <div class="down-arrow"></div>
+                    <div class="node bg-light-blue" style="width: 250px; font-size: 0.9em;">
+                        Offer <strong>clarithromycin OR doxycycline</strong> for 5 days plus self care.
+                    </div>
+                </div>
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+                    <div class="down-arrow" style="height: 40px;"><span style="position: absolute; left: 5px; top: 5px; font-size: 0.7em; color: #666; width: 60px;">If pregnant</span></div>
+                    <div class="node bg-light-blue" style="width: 250px; font-size: 0.9em;">
+                        Offer <strong>erythromycin</strong> for 5 days plus self care.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="locked" id="safety-net" style="margin-top: 40px; margin-bottom: 40px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <div class="node bg-orange" style="width: 800px; padding: 20px;">
+                <strong>FOR ALL PATIENTS:</strong> If symptoms worsen rapidly or significantly at any time, OR do not improve after completion of treatment course -> <strong>Onward referral</strong>.
+            </div>
+            <div class="node bg-yellow" style="width: 800px; padding: 15px; margin-top: 10px; background-color: #FBC02D; color: #333; font-weight: bold;">
+                FOR ALL PATIENTS: share self-care and safety-netting advice using TARGET Respiratory Tract Infection leaflets.
+            </div>
+        </div>
+
+    </div>
+
+    <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeNewsModal()">&times;</span>
+            <h2 style="color: var(--red-alert); margin-top: 0; border-bottom: 2px solid var(--red-alert); padding-bottom: 10px;">NEWS2 Calculator</h2>
+            
+            <div class="calc-form-group">
+                <label>Respiration Rate (breaths/min)</label>
+                <input type="number" id="n-rr" placeholder="e.g. 16">
+            </div>
+            <div class="calc-form-group">
+                <label>SpO2 Scale 1 (%)</label>
+                <input type="number" id="n-spo2" placeholder="e.g. 98">
+            </div>
+            <div class="calc-form-group">
+                <label>Air or Oxygen?</label>
+                <select id="n-o2">
+                    <option value="0">Air</option>
+                    <option value="2">Oxygen</option>
+                </select>
+            </div>
+            <div class="calc-form-group">
+                <label>Systolic Blood Pressure (mmHg)</label>
+                <input type="number" id="n-sbp" placeholder="e.g. 120">
+            </div>
+            <div class="calc-form-group">
+                <label>Pulse (beats/min)</label>
+                <input type="number" id="n-hr" placeholder="e.g. 75">
+            </div>
+            <div class="calc-form-group">
+                <label>Consciousness</label>
+                <select id="n-cvpu">
+                    <option value="0">Alert</option>
+                    <option value="3">CVPU (Confusion, Voice, Pain, Unresponsive)</option>
+                </select>
+            </div>
+            <div class="calc-form-group">
+                <label>Temperature (°C)</label>
+                <input type="number" step="0.1" id="n-temp" placeholder="e.g. 37.2">
+            </div>
+            
+            <button class="btn-news" onclick="calculateNews2()">Calculate Total Score</button>
+            <div id="news2-result"></div>
+        </div>
+    </div>
+
+    <script>
+        function makeChoice(parentNodeId, choice, targetNodeId) {
+            const parentNode = document.getElementById(parentNodeId);
+            const buttons = parentNode.querySelectorAll('button.flow-btn');
+            
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(choice)) {
+                    btn.classList.add('selected');
+                    btn.classList.remove('disabled');
+                } else {
+                    btn.classList.remove('selected');
+                    btn.classList.add('disabled');
+                }
+            });
+            
+            const targetNode = document.getElementById(targetNodeId);
+            if (targetNode) {
+                targetNode.classList.remove('locked');
+                targetNode.classList.add('unlocked');
+                
+                // Arrows unlocking logic
+                if(choice.includes('NO') && parentNodeId === 'node-1') document.getElementById('arrow-to-2').classList.add('unlocked');
+                if(choice.includes('Criteria Met') && parentNodeId === 'node-2') {
+                    document.getElementById('arrow-to-3').classList.add('unlocked');
+                    document.getElementById('gateway-duration').classList.remove('locked');
+                    document.getElementById('gateway-duration').classList.add('unlocked');
+                }
+                if(choice.includes('NO') && parentNodeId === 'node-3') document.getElementById('arrow-to-4').classList.add('unlocked');
+                if(choice.includes('YES') && parentNodeId === 'node-4') document.getElementById('arrow-to-5').classList.add('unlocked');
+                if(choice.includes('2 or more') && parentNodeId === 'node-5') document.getElementById('arrow-to-treat').classList.add('unlocked');
+                
+                // Show safety netting if reaching end paths
+                if(targetNodeId === 'node-3-side' || targetNodeId === 'node-5-side' || targetNodeId === 'allergy-split') {
+                    document.getElementById('safety-net').classList.remove('locked');
+                    document.getElementById('safety-net').classList.add('unlocked');
+                }
+                
+                // Also show safety netting immediately if Treatment Path is opened
+                if (targetNodeId === 'treatment-path') {
+                     document.getElementById('safety-net').classList.remove('locked');
+                     document.getElementById('safety-net').classList.add('unlocked');
+                }
+
+                setTimeout(() => {
+                    targetNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        }
+
+        // --- NEWS2 Calculator Logic ---
+        const modal = document.getElementById("newsModal");
+        function openNewsModal() { modal.style.display = "block"; }
+        function closeNewsModal() { modal.style.display = "none"; }
+        window.onclick = function(event) { if (event.target == modal) { modal.style.display = "none"; } }
+
+        function calculateNews2() {
+            let score = 0;
+            
+            const rr = parseFloat(document.getElementById('n-rr').value);
+            if(!isNaN(rr)) {
+                if(rr <= 8) score += 3;
+                else if(rr >= 9 && rr <= 11) score += 1;
+                else if(rr >= 21 && rr <= 24) score += 2;
+                else if(rr >= 25) score += 3;
+            }
+
+            const spo2 = parseFloat(document.getElementById('n-spo2').value);
+            if(!isNaN(spo2)) {
+                if(spo2 <= 91) score += 3;
+                else if(spo2 >= 92 && spo2 <= 93) score += 2;
+                else if(spo2 >= 94 && spo2 <= 95) score += 1;
+            }
+
+            score += parseInt(document.getElementById('n-o2').value);
+
+            const sbp = parseFloat(document.getElementById('n-sbp').value);
+            if(!isNaN(sbp)) {
+                if(sbp <= 90) score += 3;
+                else if(sbp >= 91 && sbp <= 100) score += 2;
+                else if(sbp >= 101 && sbp <= 110) score += 1;
+                else if(sbp >= 220) score += 3;
+            }
+
+            const hr = parseFloat(document.getElementById('n-hr').value);
+            if(!isNaN(hr)) {
+                if(hr <= 40) score += 3;
+                else if(hr >= 41 && hr <= 50) score += 1;
+                else if(hr >= 91 && hr <= 110) score += 1;
+                else if(hr >= 111 && hr <= 130) score += 2;
+                else if(hr >= 131) score += 3;
+            }
+
+            score += parseInt(document.getElementById('n-cvpu').value);
+
+            const temp = parseFloat(document.getElementById('n-temp').value);
+            if(!isNaN(temp)) {
+                if(temp <= 35.0) score += 3;
+                else if(temp >= 35.1 && temp <= 36.0) score += 1;
+                else if(temp >= 38.1 && temp <= 39.0) score += 1;
+                else if(temp >= 39.1) score += 2;
+            }
+
+            const resultDiv = document.getElementById('news2-result');
+            resultDiv.style.display = "block";
+            
+            if(score <= 4) {
+                resultDiv.style.backgroundColor = "#c8e6c9"; // Green
+                resultDiv.style.color = "#2e7d32";
+                resultDiv.innerHTML = `Total Score: ${score} <br><span style="font-size:0.8em;">Low Risk - Ward based response</span>`;
+            } else if (score <= 6) {
+                resultDiv.style.backgroundColor = "#ffecb3"; // Yellow
+                resultDiv.style.color = "#f57f17";
+                resultDiv.innerHTML = `Total Score: ${score} <br><span style="font-size:0.8em;">Medium Risk - Urgent ward based response</span>`;
+            } else {
+                resultDiv.style.backgroundColor = "#ffcdd2"; // Red
+                resultDiv.style.color = "#c62828";
+                resultDiv.innerHTML = `Total Score: ${score} <br><span style="font-size:0.8em;">High Risk - Emergency response (A&E/999)</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
