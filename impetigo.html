@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impetigo Flowchart</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --orange: #e27d60;
+            --grey-box: #8e8d8a;
+            --teal: #659dbd;
+            --light-blue: #a3c2de;
+            --green: #859a71;
+            --coral: #e8a87c;
+            --yellow: #fdf498;
+            --line-color: #ccc;
+            --red-alert: #D5281B;
+        }
+
+        body { font-family: Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #333; }
+        
+        .back-nav { display:inline-block; margin-bottom: 20px; padding: 10px 15px; background: #768692; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; transition: 0.2s;}
+        .back-nav:hover { background: #4C6272; }
+
+        .flowchart-container { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+        .node { background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 400px; font-size: 0.95em; line-height: 1.4; transition: all 0.3s ease; position: relative; }
+        .node h3 { margin: 0 0 10px 0; font-size: 1.1em; color: white; }
+
+        .bg-orange { background-color: var(--orange); color: white; }
+        .bg-grey { background-color: var(--grey-box); color: white; }
+        .bg-teal { background-color: var(--teal); color: white; }
+        .bg-light-blue { background-color: var(--light-blue); color: #333; font-weight: bold; }
+        .bg-green { background-color: var(--green); color: white; }
+        .bg-red { background-color: var(--red-alert); color: white; }
+        
+        .gateway { background-color: var(--yellow); border: 2px solid red; color: red; font-weight: bold; padding: 5px 15px; border-radius: 4px; margin-bottom: -10px; z-index: 2; }
+
+        .flow-row { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; }
+        .side-branch { display: flex; align-items: center; margin-left: 20px; }
+
+        .connector-line { width: 50px; height: 2px; background-color: var(--line-color); position: relative; }
+        .connector-line.yes::after { content: "YES"; position: absolute; top: -20px; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+        .connector-line.no::after { content: "NO"; position: absolute; top: -20px; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+
+        .down-arrow { width: 2px; height: 20px; background-color: var(--line-color); margin: 0 auto; position: relative; }
+        .down-arrow.has-no::after { content: "NO"; position: absolute; top: 0; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+        .down-arrow.has-yes::after { content: "YES"; position: absolute; top: 0; left: 10px; font-size: 0.8em; color: #666; font-weight: bold; }
+
+        .split-columns { display: flex; justify-content: center; align-items: flex-start; width: 100%; gap: 40px; margin-top: 10px; }
+        .col { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 400px; }
+
+        .action-btns { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;}
+        button.flow-btn { background-color: white; color: #333; border: 2px solid transparent; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button.flow-btn:hover { background-color: #eee; }
+        button.flow-btn.selected { border: 3px solid #000; background-color: #e0e0e0; }
+        button.flow-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .locked { opacity: 0.3; pointer-events: none; filter: grayscale(80%); }
+
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-nav">← Back to Main Menu</a>
+
+    <h2 style="text-align: center; color: #005EB8; margin-top: 0;">Impetigo</h2>
+    <p style="text-align: center; color: #666; margin-top: -10px;">(Non-bullous impetigo, for adults and children aged 1 year and over)</p>
+    
+    <div class="flowchart-container">
+
+        <div class="flow-row" id="row-1">
+            <div class="node bg-orange" id="node-1">
+                Does the patient meet ANY of the following:
+                <ul style="text-align: left; font-size: 0.9em; margin-bottom: 0;">
+                    <li>Risk of deterioration, red flags or serious illness</li>
+                    <li>Immunosuppressed and infection is widespread</li>
+                    <li>Severe complications suspected (e.g. deeper soft tissue infection)</li>
+                </ul>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'YES', 'node-1-side')">YES</button>
+                    <button class="flow-btn" onclick="makeChoice('node-1', 'NO', 'node-2')">NO</button>
+                </div>
+            </div>
+            
+            <div class="side-branch locked" id="node-1-side">
+                <div class="gateway" style="margin-left: -15px; margin-right: 5px; margin-bottom: 0;">Gateway Point</div>
+                <div class="connector-line yes"></div>
+                <div class="node bg-orange" style="width: 250px;">
+                    Consider calculating NEWS2 Score ahead of signposting patient to A&E or calling 999.
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-no"></div>
+
+        <div class="flow-row locked" id="node-2">
+            <div class="node bg-grey" style="width: 500px;">
+                <h3>Does the patient follow typical progression of impetigo features?</h3>
+                <div style="text-align: left; font-size: 0.9em;">
+                    • Initial lesion is a very thin-walled vesicle on an erythematous base<br>
+                    • Exudate dries to form golden yellow or yellow-brown crusts<br>
+                    • Common on exposed skin on the face, limbs and flexures<br>
+                    • Satellite lesions may develop following autoinoculation
+                </div>
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'YES', 'node-3')">YES (Impetigo More Likely)</button>
+                    <button class="flow-btn" onclick="makeChoice('node-2', 'NO', 'node-2-side')">NO (Impetigo Less Likely)</button>
+                </div>
+            </div>
+
+            <div class="side-branch locked" id="node-2-side">
+                <div class="connector-line no"></div>
+                <div class="node bg-light-blue" style="width: 200px;">
+                    Consider alternative diagnosis and proceed appropriately.
+                </div>
+            </div>
+        </div>
+
+        <div class="down-arrow has-yes"></div>
+
+        <div class="flow-row locked" id="node-3">
+            <div class="node bg-teal">
+                How many lesions/clusters are present?
+                <div class="action-btns">
+                    <button class="flow-btn" onclick="makeChoice('node-3', '≤3', 'col-1')">≤ 3 Lesions</button>
+                    <button class="flow-btn" onclick="makeChoice('node-3', '≥4', 'col-2')">≥ 4 Lesions</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="split-columns">
+            
+            <div class="col locked" id="col-1">
+                <div class="down-arrow has-yes"></div>
+                <div class="node bg-green">
+                    <strong>Localised non-bullous impetigo</strong>
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-light-blue">
+                    Offer <strong>hydrogen peroxide 1% cream</strong> for 5 days plus self-care.
+                </div>
+                <div class="down-arrow" style="height: 40px;"><span style="position: absolute; left: 10px; top: 10px; font-size: 0.8em; color: #666;">If unsuitable/ineffective</span></div>
+                <div class="node bg-light-blue">
+                    Offer <strong>fusidic acid cream</strong> for 5 days plus self-care.
+                </div>
+            </div>
+
+            <div class="col locked" id="col-2">
+                <div class="down-arrow has-yes"></div>
+                <div class="node bg-green" style="background-color: #8f9779;">
+                    <strong>Widespread non-bullous impetigo</strong>
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-light-blue">
+                    Offer <strong>flucloxacillin</strong> (if no allergy) for 5 days plus self-care.
+                </div>
+                <div class="down-arrow"></div>
+                <div class="node bg-red" id="penicillin-node">
+                    <strong>Reported penicillin allergy?</strong>
+                    <div class="action-btns">
+                        <button class="flow-btn" onclick="makeChoice('penicillin-node', 'YES', 'allergy-result')">YES</button>
+                    </div>
+                </div>
+                
+                <div class="locked" id="allergy-result" style="display: flex; gap: 20px; width: 100%;">
+                    <div style="flex:1;">
+                        <div class="down-arrow has-yes"></div>
+                        <div class="node bg-light-blue" style="width: auto;">
+                            Offer <strong>clarithromycin</strong> for 5 days plus self-care.
+                        </div>
+                    </div>
+                    <div style="flex:1;">
+                        <div class="down-arrow" style="height: 40px;"><span style="position: absolute; left: 5px; top: 5px; font-size: 0.7em; color: #666; width: 60px;">If pregnant</span></div>
+                        <div class="node bg-light-blue" style="width: auto;">
+                            Offer <strong>erythromycin</strong> for 5 days plus self-care.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function makeChoice(parentNodeId, choice, targetNodeId) {
+            const parentNode = document.getElementById(parentNodeId);
+            const buttons = parentNode.querySelectorAll('button.flow-btn');
+            
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(choice)) {
+                    btn.classList.add('selected');
+                    btn.classList.remove('disabled');
+                } else {
+                    btn.classList.remove('selected');
+                    btn.classList.add('disabled');
+                }
+            });
+            
+            const targetNode = document.getElementById(targetNodeId);
+            if (targetNode) {
+                targetNode.classList.remove('locked');
+                targetNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    </script>
+</body>
+</html>
